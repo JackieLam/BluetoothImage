@@ -74,6 +74,7 @@
 		18DA604918E57629001B0AD7 /* BIPeripheralViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BIPeripheralViewController.m; path = Controllers/BIPeripheralViewController.m; sourceTree = "<group>"; };
 		18DA604A18E57629001B0AD7 /* BIPeripheralViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = BIPeripheralViewController.xib; path = Controllers/BIPeripheralViewController.xib; sourceTree = "<group>"; };
 		18DA604E18E57814001B0AD7 /* CoreBluetooth.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreBluetooth.framework; path = System/Library/Frameworks/CoreBluetooth.framework; sourceTree = SDKROOT; };
+		18DA605018E57DC9001B0AD7 /* SERVICES.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SERVICES.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -137,6 +138,7 @@
 			children = (
 				18DA601318E5755C001B0AD7 /* AppDelegate.h */,
 				18DA601418E5755C001B0AD7 /* AppDelegate.m */,
+				18DA605018E57DC9001B0AD7 /* SERVICES.h */,
 				18DA604D18E57631001B0AD7 /* Controllers */,
 				18DA603D18E575E3001B0AD7 /* AppCache */,
 				18DA603618E575B2001B0AD7 /* Handlers */,
