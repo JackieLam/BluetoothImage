@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1879F34318E6A33900CB61D3 /* ImageBlock.m in Sources */ = {isa = PBXBuildFile; fileRef = 1879F34218E6A33900CB61D3 /* ImageBlock.m */; };
 		18DA600518E5755C001B0AD7 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 18DA600418E5755C001B0AD7 /* Foundation.framework */; };
 		18DA600718E5755C001B0AD7 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 18DA600618E5755C001B0AD7 /* CoreGraphics.framework */; };
 		18DA600918E5755C001B0AD7 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 18DA600818E5755C001B0AD7 /* UIKit.framework */; };
@@ -42,6 +43,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		1879F34118E6A33900CB61D3 /* ImageBlock.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImageBlock.h; sourceTree = "<group>"; };
+		1879F34218E6A33900CB61D3 /* ImageBlock.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImageBlock.m; sourceTree = "<group>"; };
 		18DA600118E5755C001B0AD7 /* BluetoothImage.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BluetoothImage.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		18DA600418E5755C001B0AD7 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		18DA600618E5755C001B0AD7 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -102,6 +105,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		18BAA0D118E7195B00DD260C /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				1879F34118E6A33900CB61D3 /* ImageBlock.h */,
+				1879F34218E6A33900CB61D3 /* ImageBlock.m */,
+			);
+			name = Model;
+			sourceTree = "<group>";
+		};
 		18DA5FF818E5755C001B0AD7 = {
 			isa = PBXGroup;
 			children = (
@@ -139,6 +151,7 @@
 				18DA601318E5755C001B0AD7 /* AppDelegate.h */,
 				18DA601418E5755C001B0AD7 /* AppDelegate.m */,
 				18DA605018E57DC9001B0AD7 /* SERVICES.h */,
+				18BAA0D118E7195B00DD260C /* Model */,
 				18DA604D18E57631001B0AD7 /* Controllers */,
 				18DA603D18E575E3001B0AD7 /* AppCache */,
 				18DA603618E575B2001B0AD7 /* Handlers */,
@@ -313,6 +326,7 @@
 			files = (
 				18DA603518E575A8001B0AD7 /* BICentralHandler.m in Sources */,
 				18DA603918E575C2001B0AD7 /* BIPeripheralHandler.m in Sources */,
+				1879F34318E6A33900CB61D3 /* ImageBlock.m in Sources */,
 				18DA604618E5761B001B0AD7 /* BICentralViewController.m in Sources */,
 				18DA603C18E575DF001B0AD7 /* AppCache.m in Sources */,
 				18DA601518E5755C001B0AD7 /* AppDelegate.m in Sources */,
