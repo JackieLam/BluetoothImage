@@ -8,7 +8,8 @@
 
 #import "BICentralHandler.h"
 #import "SERVICES.h"
-#import "ImageBlock.h"
+//#import "ImageBlock.h"
+#import "AppCache.h"
 
 @interface BICentralHandler()
 
@@ -50,16 +51,16 @@
 - (void)centralManagerDidUpdateState:(CBCentralManager *)central
 {
     if (central.state != CBCentralManagerStatePoweredOn) {
-        // TODO: Alertion on opening the bluetooth
+        NSLog(@"[!] The Central Manager is turned down. ");
         return;
     }
 	
     if (central.state == CBCentralManagerStatePoweredOn) {
-        // Start scanning
-//		[_centralManager scanForPeripheralsWithServices:@[self.imageServiceUUID] options:@{ CBCentralManagerScanOptionAllowDuplicatesKey : @NO }];
+        NSLog(@"[!] The Central Manager is on. ");
     }
 }
 
+// Callback from start scanning
 - (void)centralManager:(CBCentralManager *)central didDiscoverPeripheral:(CBPeripheral *)peripheral advertisementData:(NSDictionary *)advertisementData RSSI:(NSNumber *)RSSI
 {
     self.periNameMatchingDict[peripheral.name] = peripheral;
@@ -84,7 +85,6 @@
     [self.delegate didConnectPeripheralName:peripheral.name error:nil];
 }
 
-
 - (void)centralManager:(CBCentralManager *)central didFailToConnectPeripheral:(CBPeripheral *)peripheral error:(NSError *)error
 {
     [self cleanup];
@@ -98,7 +98,8 @@
 {
     
     _discoveredPeripheral = nil;
-    [central scanForPeripheralsWithServices:@[self.imageServiceUUID] options:@{ CBCentralManagerScanOptionAllowDuplicatesKey : @YES }];
+//    [central scanForPeripheralsWithServices:@[self.imageServiceUUID] options:@{ CBCentralManagerScanOptionAllowDuplicatesKey : @YES }];
+    NSLog(@"[!] Disconnect the peripheral!");
     
     [self.delegate didDisconnectPeripheralName:peripheral.name error:error];
 }
@@ -108,7 +109,7 @@
 
 - (void)peripheral:(CBPeripheral *)peripheral didDiscoverServices:(NSError *)error
 {
-    NSLog(@"     Services discovered !");
+    NSLog(@"  #   Services discovered !");
     if (error) {
         [self cleanup];
         return;
@@ -123,7 +124,7 @@
 
 - (void)peripheral:(CBPeripheral *)peripheral didDiscoverCharacteristicsForService:(CBService *)service error:(NSError *)error
 {
-    NSLog(@"     Characteristic discovered !");
+    NSLog(@"  $   Characteristic discovered !");
     if (error) {
         [self cleanup];
         return;
@@ -138,10 +139,8 @@
 
 - (void)peripheral:(CBPeripheral *)peripheral didUpdateValueForCharacteristic:(CBCharacteristic *)characteristic error:(NSError *)error
 {
-    if (characteristic.UUID)
-    
     if (error) {
-        NSLog(@"didUpdateValueForCharacteristic Error");
+        NSLog(@"didUpdateValueForCharacteristic Error [REASON]: %@", [error localizedDescription]);
         return;
     }
 	
@@ -182,9 +181,16 @@
     [self.centralManager connectPeripheral:per options:@{ CBCentralManagerScanOptionAllowDuplicatesKey : @NO }];
 }
 
-#pragma mark - Helper Method
-- (void)cleanup {
+- (void)continueTransferWithPeripheralName:(NSString *)peripheralName withFileName:(NSString *)fileName
+{
+    ImageBlock * imageBlock = [[AppCache shareManager] readDataIsLastBlockFromPath:fileName];
+    CBPeripheral *per = self.periNameMatchingDict[peripheralName];
     
+}
+
+#pragma mark - Helper Method
+- (void)cleanup
+{
     if (_discoveredPeripheral.services != nil) {
         for (CBService *service in _discoveredPeripheral.services) {
             if (service.characteristics != nil) {
