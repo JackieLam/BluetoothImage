@@ -9,6 +9,7 @@
 #import <Foundation/Foundation.h>
 #import <CoreBluetooth/CoreBluetooth.h>
 
+@class ImageBlock;
 @protocol BICentralHandlerDelegate <NSObject>
 
 // Step 1: Discovering and connecting the peripheral
@@ -16,7 +17,7 @@
 - (void)didConnectPeripheralName:(NSString *)peripheralName error:(NSError *)error; //Maybe useless
 - (void)didDisconnectPeripheralName:(NSString *)peripheralName error:(NSError *)error;
 // Step 2: Get the data of the peripheral
-- (void)updateProgressPercentage:(float)percent WithImageBlock:(UIImage *)image; //will keep updating the percentage value when receiving data from peripheral, when percent == 1.0, the update is finished. Data is split into chunks. You should keep appending data in viewController until percent == 1.0, after which you could unarchive the data.
+- (void)updateProgressPercentage:(float)percent WithImageBlock:(ImageBlock *)imageBlock; //will keep updating the percentage value when receiving data from peripheral, when percent == 1.0, the update is finished. Data is split into chunks. You should keep appending data in viewController until percent == 1.0, after which you could unarchive the data.
 
 @end
 
