@@ -206,11 +206,9 @@
 	}
     
 	//to transfer ImageBlock into NSData
-	
-	//_dataToSend = [imgBlock toNSData];
-	//_dataToSend = [BIDataPacker serializeData:_dataToSend];
-	//to do
-	
+    NSData *data = [NSKeyedArchiver archivedDataWithRootObject:imgBlock];
+    _dataToSend = [NSMutableData dataWithData:data];
+    _dataToSend = [BIDataPacker serializeData:_dataToSend];
 	
     //reset the sendDataIndex before sending
     _sendDataIndex = 0;
