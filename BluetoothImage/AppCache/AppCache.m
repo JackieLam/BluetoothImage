@@ -17,6 +17,7 @@ static const unsigned long long BlockSize=100*1024;
 @synthesize BlockReceivedTable;
 @synthesize BlockSendedTable;
 @synthesize FileCapacity;
+@synthesize ImageReceived;
 
 +(AppCache *)shareManager{
     static AppCache *shareAppCacheInstance=nil;
@@ -36,8 +37,9 @@ static const unsigned long long BlockSize=100*1024;
 }
 
 -(ImageBlock *)readDataIsLastBlockFromPath:(NSString *)path{
+    //这里
     NSFileHandle *inFile=[NSFileHandle fileHandleForReadingAtPath:path];
-//    assert(inFile!=nil);
+    assert(inFile!=nil);
     [inFile seekToFileOffset:[self getOffSetWithFilePath:path andDict:self.BlockSendedTable]];
     NSData *data=[inFile readDataOfLength:BlockSize];
     ImageBlock *packet=[[ImageBlock alloc]init];
@@ -51,6 +53,8 @@ static const unsigned long long BlockSize=100*1024;
         packet.Eof=NO;
         [self setNextBlockWith:path andDict:BlockSendedTable];
     }
+    //packet.Name的名字应该是独特的，中间用“/”分隔
+    packet.Name=[path lastPathComponent];
     packet.Data=data;
     packet.Sender=self.Sender;
     [inFile closeFile];
@@ -58,6 +62,7 @@ static const unsigned long long BlockSize=100*1024;
 }
 
 -(void)setNextBlockWith:(NSString *)path andDict:(NSMutableDictionary *)dict{
+    //这里有问题，万一【dict objectforkey：path】为空
     int newValue=[[dict objectForKey:path]intValue]+1;
     [dict setObject:[NSNumber numberWithInt:newValue] forKey:path];
 }
@@ -88,17 +93,24 @@ static const unsigned long long BlockSize=100*1024;
 }
 
 
--(void)storeData:(ImageBlock *)image{
+-(NSString *)storeData:(ImageBlock *)image{
+//    image.Name=@"/Users/developer03/Desktop/text/testImg.jpg";
     if ([self isFileExistentWithFileName:image.Name]==NO){
         [[NSFileManager defaultManager] createFileAtPath:image.Name contents:nil attributes:nil];
     }
     NSFileHandle *outFile=[NSFileHandle fileHandleForWritingAtPath:image.Name];
-    [outFile seekToFileOffset:[self getOffSetWithFilePath:image.Name andDict:BlockReceivedTable]];
+    unsigned long long length=[self getOffSetWithFilePath:image.Name andDict:BlockReceivedTable];
+    [outFile seekToFileOffset:length];
     [outFile writeData:image.Data];
+    [outFile closeFile];
     if (image.Eof) {
         [BlockReceivedTable removeObjectForKey:image.Name];
+        [ImageReceived addObject:image.Name];
+        //这里应该把NSData变成反序列化，还原成图片
+        return @"100%";
     }else{
         [self setNextBlockWith:image.Name andDict:BlockReceivedTable];
+        return [NSString stringWithFormat:@"%.1llu",(length+BlockSize)*100/image.Total];
     }
     
 }
@@ -111,33 +123,39 @@ static const unsigned long long BlockSize=100*1024;
 
 //序列化
 -(void)storeBaseData{
-    NSString *BlockReceivedTablePath=[NSHomeDirectory() stringByAppendingString:@"BlockReceivedTablePath.plist"];
-    NSString *BlockSendedTablePath=[NSHomeDirectory() stringByAppendingString:@"BlockSendedTable.plist"];
-    NSString *FileCapacityPath=[NSHomeDirectory() stringByAppendingString:@"FileCapacity.plist"];
-    NSString *SenderPath=[NSHomeDirectory() stringByAppendingString:@"Sender.plist"];
+    //局部变量，只有在用的时候才创建
+    NSString *BlockReceivedTablePath=[NSHomeDirectory() stringByAppendingString:@"/BlockReceivedTablePath1.plist"];
+    NSString *BlockSendedTablePath=[NSHomeDirectory() stringByAppendingString:@"/BlockSendedTable1.plist"];
+    NSString *FileCapacityPath=[NSHomeDirectory() stringByAppendingString:@"/FileCapacity1.plist"];
+    NSString *SenderPath=[NSHomeDirectory() stringByAppendingString:@"/Sender1.plist"];
+    NSString *ImageReceivedPath=[NSHomeDirectory() stringByAppendingString:@"/ImageReceived1.plist"];
 
     [self.BlockReceivedTable writeToFile:BlockReceivedTablePath atomically:YES];
     [self.BlockSendedTable writeToFile:BlockSendedTablePath atomically:YES];
     [self.FileCapacity writeToFile:FileCapacityPath atomically:YES];
     [self.Sender writeToFile:SenderPath atomically:YES encoding:NSUTF8StringEncoding error:nil];
+    [self.ImageReceived writeToFile:ImageReceivedPath atomically:YES];
 }
 
 //反序列化
 -(void)reStoreBaseData{
-    NSString *BlockReceivedTablePath=[NSHomeDirectory() stringByAppendingString:@"BlockReceivedTablePath.plist"];
-    NSString *BlockSendedTablePath=[NSHomeDirectory() stringByAppendingString:@"BlockSendedTable.plist"];
-    NSString *FileCapacityPath=[NSHomeDirectory() stringByAppendingString:@"FileCapacity.plist"];
-    NSString *SenderPath=[NSHomeDirectory() stringByAppendingString:@"Sender.plist"];
+    //局部变量，只有在用的时候才创建
+    NSString *BlockReceivedTablePath=[NSHomeDirectory() stringByAppendingString:@"/BlockReceivedTablePath1.plist"];
+    NSString *BlockSendedTablePath=[NSHomeDirectory() stringByAppendingString:@"/BlockSendedTable1.plist"];
+    NSString *FileCapacityPath=[NSHomeDirectory() stringByAppendingString:@"/FileCapacity1.plist"];
+    NSString *SenderPath=[NSHomeDirectory() stringByAppendingString:@"/Sender1.plist"];
+    NSString *ImageReceivedPath=[NSHomeDirectory() stringByAppendingString:@"/ImageReceived1.plist"];
     
     //第一次打开应用程序时，下面4项是nil
     self.BlockReceivedTable=[self reStoreDictWithPath:BlockReceivedTablePath];
     self.BlockSendedTable=[self reStoreDictWithPath:BlockSendedTablePath];
     self.FileCapacity=[self reStoreDictWithPath:FileCapacityPath];
     self.Sender=[self reStroeSenderWithPath:SenderPath];
+    self.ImageReceived=[self reStoreArrayWithPath:ImageReceivedPath];
 }
 
 -(NSMutableDictionary *)reStoreDictWithPath:(NSString *)path{
-    NSMutableDictionary *temp=[NSMutableDictionary dictionaryWithContentsOfFile:path];
+    NSMutableDictionary *temp=[[NSMutableDictionary alloc]initWithContentsOfFile:path];
     if(temp==nil)
         temp=[[NSMutableDictionary alloc]initWithCapacity:20];
     return temp;
@@ -149,6 +167,12 @@ static const unsigned long long BlockSize=100*1024;
         temp=@"";
     return temp;
 }
+-(NSMutableArray *)reStoreArrayWithPath:(NSString *)path{
+    NSMutableArray *temp=[NSMutableArray arrayWithContentsOfFile:path];
+    if(temp==nil)
+        temp=[[NSMutableArray alloc]initWithCapacity:20];
+    return temp;
+}
 
 -(NSString *)getPercentageWithSendingFileName:(NSString *)name{
     unsigned long long capacity=[[FileCapacity objectForKey:name]unsignedLongLongValue];
@@ -156,9 +180,5 @@ static const unsigned long long BlockSize=100*1024;
     NSString *percentage=[NSString stringWithFormat:@"%.1llu",hadLoad*100/capacity];
     return percentage;
 }
-
-//-(NSString *)getPercentageWithReceivingFileName:(NSString *)name{
-//    
-//}
 
 @end
