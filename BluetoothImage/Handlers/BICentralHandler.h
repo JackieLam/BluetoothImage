@@ -26,7 +26,7 @@
 
 @interface BICentralHandler : NSObject<CBCentralManagerDelegate, CBPeripheralDelegate>
 
-@property (nonatomic, strong) id<BICentralHandlerDelegate> delegate;
+@property (nonatomic, weak) id<BICentralHandlerDelegate> delegate;
 
 - (id)initWithDelegate:(id)controller;
 - (void)startScanning;

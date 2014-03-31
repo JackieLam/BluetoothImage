@@ -29,7 +29,7 @@
 	NSString *filePath;
 }
 
-@property(strong, nonatomic) id<BIPeripheralHandlerDelegate, CBPeripheralManagerDelegate> delegate;
+@property(weak, nonatomic) id<BIPeripheralHandlerDelegate, CBPeripheralManagerDelegate> delegate;
 
 - (id)initWithDelegate:(id)controller;
 - (void)startAdvertising;
