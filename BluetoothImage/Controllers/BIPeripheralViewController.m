@@ -40,10 +40,6 @@
     _isSending = NO;
 }
 
-- (void)viewWillDisappear:(BOOL)animated {
-    NSLog(@"will disappear!");
-}
-
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
@@ -63,14 +59,18 @@
 #pragma mark - UIImagePickerControllerDelegate
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info {
     [self dismissViewControllerAnimated:NO completion:NULL];
-    _fileName = [info objectForKey:UIImagePickerControllerMediaURL];
-    if (_fileName) {
-        [_peripheralHandler startAdvertising];
-        _isSending = YES;
-        [_chooseOrCanelButton setTitle:@"Cancel" forState:UIControlStateNormal];
-    }
+    [_peripheralHandler startAdvertising];
     
-    [self presentViewController:self animated:YES completion:NULL];
+    _isSending = YES;
+    
+    NSURL *url = [info objectForKey:UIImagePickerControllerReferenceURL];
+    _fileName = url.path;
+    
+    UIImage *image = [info objectForKey:UIImagePickerControllerOriginalImage];
+    [_imageView setImage:image];
+    
+    _progressView.progress = 0.0f;
+    [_chooseOrCanelButton setTitle:@"Cancel" forState:UIControlStateNormal];
 }
 
 #pragma mark - BIPeripheralHandlerDelegate

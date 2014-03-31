@@ -45,6 +45,8 @@ static NSString *CELL_IDENTIFIER = @"CellIdentifier";
     
     _centralHandler = [[BICentralHandler alloc] initWithDelegate:self];
     
+    _progressView.progress = 0.0f;
+    
     // Show devices list
     _alertView = [[UIAlertView alloc] initWithTitle:@"Select Device" message:nil delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:nil, nil];
     UITableView *deviceListView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, 230, 200)];

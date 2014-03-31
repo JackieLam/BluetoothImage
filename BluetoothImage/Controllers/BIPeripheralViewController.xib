@@ -8,7 +8,7 @@
             <connections>
                 <outlet property="chooseOrCanelButton" destination="QqU-W1-yYi" id="wlE-sI-zxq"/>
                 <outlet property="imageView" destination="et0-sE-DSd" id="SUC-LH-Igr"/>
-                <outlet property="progressView" destination="i5M-Pr-FkT" id="ZZi-Dt-KcO"/>
+                <outlet property="progressView" destination="nmK-qp-bK7" id="TDG-SY-vEf"/>
                 <outlet property="transferedDataCountInfo" destination="jhn-y2-0dR" id="Ohs-fh-Qj0"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
             </connections>
