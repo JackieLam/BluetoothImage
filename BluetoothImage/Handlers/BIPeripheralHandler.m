@@ -200,7 +200,8 @@
     if (!path) {
         return;
     }
-	ImageBlock *imgBlock = [appCache readDataIsLastBlockFromPath:path];
+#warning DANGER!!! The Receiver's name could not be nil!
+	ImageBlock *imgBlock = [appCache readDataIsLastBlockFromPath:path ToReceiver:nil];
 	if (imgBlock.Eof) {
 		sendingLastBLock = YES;
 	}
