@@ -32,7 +32,6 @@
 - (void)startScanning;
 - (void)stopScanning;
 - (void)connectToPeripheralName:(NSString *)peripheralName;
-- (void)disconnectToPeripheralName:(NSString *)peripheralName;
 
 // Interface of retrieving cache
 //- (void)continueTransferWithPeripheralName:(NSString *)peripheralName withFileName:(NSString *)fileName;

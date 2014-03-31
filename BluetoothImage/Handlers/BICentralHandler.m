@@ -17,7 +17,7 @@
 @property (nonatomic, strong) CBPeripheral *discoveredPeripheral;
 @property (nonatomic, strong) CBUUID *imageServiceUUID;
 @property (nonatomic, strong) CBUUID *originImageCharacteristicUUID;
-@property (nonatomic, strong) CBUUID *thumbImageCharacteristicUUID;
+@property (nonatomic, strong) CBUUID *nameCharacteristicUUID;
 @property (nonatomic, strong) NSMutableDictionary *periNameMatchingDict;
 
 @property (nonatomic, strong) NSMutableData *dataReceive;
@@ -35,10 +35,9 @@
         
         dispatch_queue_t centralQueue = dispatch_queue_create(QUEUE_CENTRALMANAGER, DISPATCH_QUEUE_SERIAL);
         self.centralManager = [[CBCentralManager alloc] initWithDelegate:self queue:centralQueue options:@{CBCentralManagerOptionShowPowerAlertKey: @YES}];
-        
         self.imageServiceUUID = [CBUUID UUIDWithString:IMAGE_SERVICE_UUID];
         self.originImageCharacteristicUUID = [CBUUID UUIDWithString:ORIGIN_IMAGE_CHARACTERISTIC];
-        self.thumbImageCharacteristicUUID = [CBUUID UUIDWithString:THUMB_IMAGE_CHARACTERISTIC];
+        self.nameCharacteristicUUID = [CBUUID UUIDWithString:NAME_CHARACTERISTIC];
         _periNameMatchingDict = [NSMutableDictionary dictionary];
         _dataReceive = [NSMutableData data];
     }
@@ -120,7 +119,7 @@
     
     for (CBService *service in peripheral.services) {
         if ([service.UUID isEqual:self.imageServiceUUID]) {
-            [peripheral discoverCharacteristics:@[self.originImageCharacteristicUUID] forService:service];
+            [peripheral discoverCharacteristics:@[self.originImageCharacteristicUUID, self.nameCharacteristicUUID] forService:service];
         }
     }
 }
@@ -137,6 +136,24 @@
         if ([characteristic.UUID isEqual:self.originImageCharacteristicUUID]) {
             [peripheral setNotifyValue:YES forCharacteristic:characteristic];
         }
+        else if ([characteristic.UUID isEqual:self.nameCharacteristicUUID]) {
+            NSString *nameString = [UIDevice currentDevice].name;
+            NSData *nameData = [nameString dataUsingEncoding:NSUTF8StringEncoding];
+            [peripheral writeValue:nameData forCharacteristic:characteristic type:CBCharacteristicWriteWithResponse];
+        }
+    }
+}
+
+- (void)peripheral:(CBPeripheral *)peripheral
+didWriteValueForCharacteristic:(CBCharacteristic *)characteristic
+             error:(NSError *)error
+{
+    if (error) {
+        NSLog(@"[!] Error writing my own name to the peripheral : %@",
+              [error localizedDescription]);
+    }
+    else {
+        NSLog(@"[!] Successfully writing my own name to the peripheral");
     }
 }
 
@@ -196,7 +213,7 @@
         for (CBService *service in _discoveredPeripheral.services) {
             if (service.characteristics != nil) {
                 for (CBCharacteristic *characteristic in service.characteristics) {
-                    if ([characteristic.UUID isEqual:self.originImageCharacteristicUUID] || [characteristic.UUID isEqual:self.thumbImageCharacteristicUUID]) {
+                    if ([characteristic.UUID isEqual:self.originImageCharacteristicUUID] || [characteristic.UUID isEqual:self.nameCharacteristicUUID]) {
                         if (characteristic.isNotifying) {
                             [_discoveredPeripheral setNotifyValue:NO forCharacteristic:characteristic];
                             return;
