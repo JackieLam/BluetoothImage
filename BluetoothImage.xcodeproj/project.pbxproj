@@ -30,6 +30,7 @@
 		18DA604B18E57629001B0AD7 /* BIPeripheralViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 18DA604918E57629001B0AD7 /* BIPeripheralViewController.m */; };
 		18DA604C18E57629001B0AD7 /* BIPeripheralViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 18DA604A18E57629001B0AD7 /* BIPeripheralViewController.xib */; };
 		18DA604F18E57814001B0AD7 /* CoreBluetooth.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 18DA604E18E57814001B0AD7 /* CoreBluetooth.framework */; };
+		7B973B2B18E8F3C500EDACE8 /* UIActionSheet+Blocks.m in Sources */ = {isa = PBXBuildFile; fileRef = 7B973B2A18E8F3C500EDACE8 /* UIActionSheet+Blocks.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -78,6 +79,8 @@
 		18DA604A18E57629001B0AD7 /* BIPeripheralViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = BIPeripheralViewController.xib; path = Controllers/BIPeripheralViewController.xib; sourceTree = "<group>"; };
 		18DA604E18E57814001B0AD7 /* CoreBluetooth.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreBluetooth.framework; path = System/Library/Frameworks/CoreBluetooth.framework; sourceTree = SDKROOT; };
 		18DA605018E57DC9001B0AD7 /* SERVICES.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SERVICES.h; sourceTree = "<group>"; };
+		7B973B2918E8F3C500EDACE8 /* UIActionSheet+Blocks.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "UIActionSheet+Blocks.h"; path = "BluetoothImage/3rdParty/UIActionSheet+Blocks.h"; sourceTree = "<group>"; };
+		7B973B2A18E8F3C500EDACE8 /* UIActionSheet+Blocks.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "UIActionSheet+Blocks.m"; path = "BluetoothImage/3rdParty/UIActionSheet+Blocks.m"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -117,6 +120,7 @@
 		18DA5FF818E5755C001B0AD7 = {
 			isa = PBXGroup;
 			children = (
+				7BA055BF18E85D5800861BE3 /* 3rdParty */,
 				18DA600A18E5755C001B0AD7 /* BluetoothImage */,
 				18DA602318E5755C001B0AD7 /* BluetoothImageTests */,
 				18DA600318E5755C001B0AD7 /* Frameworks */,
@@ -226,6 +230,15 @@
 			name = Controllers;
 			sourceTree = "<group>";
 		};
+		7BA055BF18E85D5800861BE3 /* 3rdParty */ = {
+			isa = PBXGroup;
+			children = (
+				7B973B2918E8F3C500EDACE8 /* UIActionSheet+Blocks.h */,
+				7B973B2A18E8F3C500EDACE8 /* UIActionSheet+Blocks.m */,
+			);
+			name = 3rdParty;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -330,6 +343,7 @@
 				18DA604618E5761B001B0AD7 /* BICentralViewController.m in Sources */,
 				18DA603C18E575DF001B0AD7 /* AppCache.m in Sources */,
 				18DA601518E5755C001B0AD7 /* AppDelegate.m in Sources */,
+				7B973B2B18E8F3C500EDACE8 /* UIActionSheet+Blocks.m in Sources */,
 				18DA604B18E57629001B0AD7 /* BIPeripheralViewController.m in Sources */,
 				18DA604118E5760B001B0AD7 /* BIMainViewController.m in Sources */,
 				18DA601118E5755C001B0AD7 /* main.m in Sources */,
