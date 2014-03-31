@@ -348,11 +348,8 @@
 				18DA604618E5761B001B0AD7 /* BICentralViewController.m in Sources */,
 				18DA603C18E575DF001B0AD7 /* AppCache.m in Sources */,
 				18DA601518E5755C001B0AD7 /* AppDelegate.m in Sources */,
-<<<<<<< HEAD
 				1803C70C18E8FB44001800CC /* BIDataPacker.m in Sources */,
-=======
 				7B973B2B18E8F3C500EDACE8 /* UIActionSheet+Blocks.m in Sources */,
->>>>>>> 983a8ded4539de248251d1d0e5c17ce3a404b5d3
 				18DA604B18E57629001B0AD7 /* BIPeripheralViewController.m in Sources */,
 				18DA604118E5760B001B0AD7 /* BIMainViewController.m in Sources */,
 				18DA601118E5755C001B0AD7 /* main.m in Sources */,

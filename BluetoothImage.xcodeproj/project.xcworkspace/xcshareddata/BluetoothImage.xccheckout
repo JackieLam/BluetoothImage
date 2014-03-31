@@ -5,34 +5,34 @@
 	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
 	<false/>
 	<key>IDESourceControlProjectIdentifier</key>
-	<string>84413FC1-2CF4-4011-A59D-8A50FDF30A5C</string>
+	<string>CD60A8BF-DC44-436E-998D-E4131CDC665E</string>
 	<key>IDESourceControlProjectName</key>
 	<string>BluetoothImage</string>
 	<key>IDESourceControlProjectOriginsDictionary</key>
 	<dict>
-		<key>B9E0929C-1D05-4E6F-84E8-4A30FEEA629C</key>
-		<string>https://github.com/Issic47/BluetoothImage.git</string>
+		<key>03D6890B-29F6-455B-9CD9-67E54DB5B198</key>
+		<string>https://github.com/JackieLam/BluetoothImage.git</string>
 	</dict>
 	<key>IDESourceControlProjectPath</key>
 	<string>BluetoothImage.xcodeproj/project.xcworkspace</string>
 	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
 	<dict>
-		<key>B9E0929C-1D05-4E6F-84E8-4A30FEEA629C</key>
+		<key>03D6890B-29F6-455B-9CD9-67E54DB5B198</key>
 		<string>../..</string>
 	</dict>
 	<key>IDESourceControlProjectURL</key>
-	<string>https://github.com/Issic47/BluetoothImage.git</string>
+	<string>https://github.com/JackieLam/BluetoothImage.git</string>
 	<key>IDESourceControlProjectVersion</key>
 	<integer>110</integer>
 	<key>IDESourceControlProjectWCCIdentifier</key>
-	<string>B9E0929C-1D05-4E6F-84E8-4A30FEEA629C</string>
+	<string>03D6890B-29F6-455B-9CD9-67E54DB5B198</string>
 	<key>IDESourceControlProjectWCConfigurations</key>
 	<array>
 		<dict>
 			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
 			<string>public.vcs.git</string>
 			<key>IDESourceControlWCCIdentifierKey</key>
-			<string>B9E0929C-1D05-4E6F-84E8-4A30FEEA629C</string>
+			<string>03D6890B-29F6-455B-9CD9-67E54DB5B198</string>
 			<key>IDESourceControlWCCName</key>
 			<string>BluetoothImage</string>
 		</dict>
