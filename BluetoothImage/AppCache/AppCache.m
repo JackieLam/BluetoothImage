@@ -8,8 +8,8 @@
 
 #import "AppCache.h"
 #import "ImageBlock.h"
-//每个块的上限是2MB
-static const unsigned long long BlockSize=100*1024;
+//每个块的上限是100KB
+static const unsigned long long BlockSize=1024*1024;
 
 @implementation AppCache
 
@@ -36,27 +36,29 @@ static const unsigned long long BlockSize=100*1024;
     return self;
 }
 
--(ImageBlock *)readDataIsLastBlockFromPath:(NSString *)path{
-    //这里
+-(ImageBlock *)readDataIsLastBlockFromPath:(NSString *)path ToReceiver:(NSString *)receiver{
     NSFileHandle *inFile=[NSFileHandle fileHandleForReadingAtPath:path];
     assert(inFile!=nil);
-    [inFile seekToFileOffset:[self getOffSetWithFilePath:path andDict:self.BlockSendedTable]];
+    NSString *identify=[self getIdentifyWithSender:self.Sender WithReceiver:receiver AndWithFileName:[path lastPathComponent]];
+    [inFile seekToFileOffset:[self getOffSetWithFilePath:identify andDict:self.BlockSendedTable]];
     NSData *data=[inFile readDataOfLength:BlockSize];
     ImageBlock *packet=[[ImageBlock alloc]init];
     //判断文件大小，缓存文件大小，避免每次都重新计算
     //在判断文件大小之后，才可以去判断文件是否到头了
-    packet.Total=[self getFileCapacityWithName:path];
-    if ([self isEof:inFile andFilename:path]) {
+    packet.Total=[self getFileCapacityWithName:path WithIdentify:identify];
+    if ([self isEof:inFile andFilename:identify]) {
         packet.Eof=YES;
-        [FileCapacity removeObjectForKey:path];
+//        [FileCapacity removeObjectForKey:identify];
+        [BlockSendedTable removeObjectForKey:identify];
     }else{
         packet.Eof=NO;
-        [self setNextBlockWith:path andDict:BlockSendedTable];
+        [self setNextBlockWith:identify andDict:BlockSendedTable];
     }
     //packet.Name的名字应该是独特的，中间用“/”分隔
     packet.Name=[path lastPathComponent];
     packet.Data=data;
     packet.Sender=self.Sender;
+    packet.Receiver=receiver;
     [inFile closeFile];
     return packet;
 }
@@ -68,19 +70,19 @@ static const unsigned long long BlockSize=100*1024;
 }
 -(BOOL)isEof:(NSFileHandle *)handle andFilename:(NSString *)name{
     unsigned long long cur=[handle offsetInFile];
-    unsigned long long end=[self getFileCapacityWithName:name];
+    unsigned long long end=[[FileCapacity objectForKey:name]unsignedLongLongValue];
     if(cur>=end){
         return YES;
     }
     return NO;
 }
 
--(unsigned long long)getFileCapacityWithName:(NSString *)name{
-    if([FileCapacity objectForKey:name]==nil){
+-(unsigned long long)getFileCapacityWithName:(NSString *)name WithIdentify:(NSString *) identify{
+    if([FileCapacity objectForKey:identify]==nil){
         unsigned long long length=[[[NSFileManager defaultManager]contentsAtPath:name]length];
-        [FileCapacity setObject:[NSNumber numberWithUnsignedLongLong:length] forKey:name];
+        [FileCapacity setObject:[NSNumber numberWithUnsignedLongLong:length] forKey:identify];
     }
-    return [[FileCapacity objectForKey:name]unsignedLongLongValue];
+    return [[FileCapacity objectForKey:identify]unsignedLongLongValue];
 }
 
 -(NSUInteger)getOffSetWithFilePath:(NSString *)path andDict:(NSMutableDictionary *) dict{
@@ -94,7 +96,7 @@ static const unsigned long long BlockSize=100*1024;
 
 
 -(NSString *)storeData:(ImageBlock *)image{
-//    image.Name=@"/Users/developer03/Desktop/text/testImg.jpg";
+    image.Name=@"/Users/developer03/Desktop/text/testImg.jpg";
     if ([self isFileExistentWithFileName:image.Name]==NO){
         [[NSFileManager defaultManager] createFileAtPath:image.Name contents:nil attributes:nil];
     }
@@ -106,11 +108,10 @@ static const unsigned long long BlockSize=100*1024;
     if (image.Eof) {
         [BlockReceivedTable removeObjectForKey:image.Name];
         [ImageReceived addObject:image.Name];
-        //这里应该把NSData变成反序列化，还原成图片
         return @"100%";
     }else{
         [self setNextBlockWith:image.Name andDict:BlockReceivedTable];
-        return [NSString stringWithFormat:@"%.1llu",(length+BlockSize)*100/image.Total];
+        return [NSString stringWithFormat:@"%.1llu%%",(length+BlockSize)*100/image.Total];
     }
     
 }
@@ -164,7 +165,7 @@ static const unsigned long long BlockSize=100*1024;
 -(NSString *)reStroeSenderWithPath:(NSString *)path{
     NSString *temp=[NSString stringWithContentsOfFile:path encoding:NSUTF8StringEncoding error:nil];
     if(temp==nil)
-        temp=@"";
+        temp=@"chuyang";
     return temp;
 }
 -(NSMutableArray *)reStoreArrayWithPath:(NSString *)path{
@@ -174,11 +175,16 @@ static const unsigned long long BlockSize=100*1024;
     return temp;
 }
 
--(NSString *)getPercentageWithSendingFileName:(NSString *)name{
-    unsigned long long capacity=[[FileCapacity objectForKey:name]unsignedLongLongValue];
-    unsigned long long hadLoad=[[BlockSendedTable objectForKey:name]intValue]*BlockSize;
-    NSString *percentage=[NSString stringWithFormat:@"%.1llu",hadLoad*100/capacity];
+-(NSString *)getPercentageWithSendingFile:(ImageBlock *)file{
+    NSString *identify=[self getIdentifyWithSender:file.Sender WithReceiver:file.Receiver AndWithFileName:file.Name];
+    unsigned long long capacity=[[FileCapacity objectForKey:identify]unsignedLongLongValue];
+    unsigned long long hadLoad=[[BlockSendedTable objectForKey:identify]intValue]*BlockSize;
+    NSString *percentage=[NSString stringWithFormat:@"%.1llu%%",hadLoad*100/capacity];
     return percentage;
+}
+
+-(NSString *)getIdentifyWithSender:(NSString *)sender WithReceiver:(NSString *)receiver AndWithFileName:(NSString *)name{
+    return [NSString stringWithFormat:@"/%@/%@/%@",sender,receiver,name];
 }
 
 @end

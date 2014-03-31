@@ -32,9 +32,9 @@
 //imageBlock是一个分块，接受完一个分块后调用该方法，其返回值是接受该文件的百分比
 -(NSString *)storeData:(ImageBlock *)imageBlock;
 
-//path是图片在闪存的路径，返回的NSMutableDictionary包含isLastBlock（最后一个分块）、data（Image对象）
 //该方法会分块读取图片，读取完一个分块应该把该分块发送出去，删除该分块，再调用该方法，直到读完为止
--(ImageBlock *)readDataIsLastBlockFromPath:(NSString *)path;
+//path是图片在闪存的路径，返回的NSMutableDictionary包含isLastBlock（最后一个分块）、data（Image对象）
+-(ImageBlock *)readDataIsLastBlockFromPath:(NSString *)path ToReceiver:(NSString *)receiver;
 
 //在应用程序结束的时候调用，把BlockReceivedTable、BlockSendedTable、FileCapacity和Sender储存到硬盘，下次打开应用的时候再把他们加载进内存
 -(void)storeBaseData;
@@ -43,7 +43,7 @@
 -(void)reStoreBaseData;
 
 //获取发送某个文件的百分比
--(NSString *)getPercentageWithSendingFileName:(NSString *)flieName;
+-(NSString *)getPercentageWithSendingFile:(ImageBlock *)flie;
 
 ////返回含有已经接收的图片的路径的数组，该图片以NSData形式存在沙盒内
 //-(NSMutableArray *)getReceivedImage;
