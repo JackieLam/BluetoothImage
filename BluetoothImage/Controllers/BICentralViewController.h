@@ -8,6 +8,8 @@
 
 #import <UIKit/UIKit.h>
 
-@interface BICentralViewController : UIViewController
+#import "BICentralHandler.h"
+
+@interface BICentralViewController : UIViewController <BICentralHandlerDelegate, UITableViewDataSource, UITableViewDelegate, UIAlertViewDelegate>
 
 @end

@@ -57,6 +57,9 @@
 	
     if (central.state == CBCentralManagerStatePoweredOn) {
         NSLog(@"[!] The Central Manager is on. ");
+        // TODO: start scanning?
+        // There is no interface to notify the delegate that the power is on!
+        [self startScanning];
     }
 }
 
@@ -178,7 +181,12 @@
 - (void)connectToPeripheralName:(NSString *)peripheralName
 {
     CBPeripheral *per = self.periNameMatchingDict[peripheralName];
-    [self.centralManager connectPeripheral:per options:@{ CBCentralManagerScanOptionAllowDuplicatesKey : @NO }];
+    if (per) {
+        [self.centralManager connectPeripheral:per options:@{ CBCentralManagerScanOptionAllowDuplicatesKey : @NO }];
+    } else {
+        // TODO: notify the delegate that the peripherName is invalid.
+        NSLog(@"Try to connect to a invalid peripheral: %@", peripheralName);
+    }
 }
 
 #pragma mark - Helper Method

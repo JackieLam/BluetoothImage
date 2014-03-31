@@ -19,6 +19,9 @@
 // Step 2: Get the data of the peripheral
 - (void)updateProgressPercentage:(float)percent WithImageBlock:(ImageBlock *)imageBlock; //will keep updating the percentage value when receiving data from peripheral, when percent == 1.0, the update is finished. Data is split into chunks. You should keep appending data in viewController until percent == 1.0, after which you could unarchive the data.
 
+// After some attempts, the central handler failed to connect the peripheral.
+- (void)didFailToConnectPeripheralName:(NSString *)peripheralName error:(NSError *)error;
+
 @end
 
 @interface BICentralHandler : NSObject<CBCentralManagerDelegate, CBPeripheralDelegate>
@@ -29,6 +32,7 @@
 - (void)startScanning;
 - (void)stopScanning;
 - (void)connectToPeripheralName:(NSString *)peripheralName;
+- (void)disconnectToPeripheralName:(NSString *)peripheralName;
 
 // Interface of retrieving cache
 //- (void)continueTransferWithPeripheralName:(NSString *)peripheralName withFileName:(NSString *)fileName;
