@@ -45,6 +45,19 @@
 //获取发送某个文件的百分比
 -(NSString *)getPercentageWithSendingFile:(ImageBlock *)flie;
 
-////返回含有已经接收的图片的路径的数组，该图片以NSData形式存在沙盒内
-//-(NSMutableArray *)getReceivedImage;
+//返回已经接收完毕的图片的信息
+//返回的数组每一项是NSDictionary,key分别是SenderhumbnailPath（缩略图路径）和imagePath（真正的路径）
+-(NSMutableArray *)getImageReceived;
+
+//返回已经发送完毕的图片的信息
+//返回的数组每一项是NSDictionary,key分别是Receiver、thumbnailPath（缩略图路径）和imagePath（真正的路径）
+-(NSMutableArray *)getImageSent;
+
+//返回还没有接收完毕的图片的信息
+//返回的数组每一项是NSDictionary,key分别是Sender、thumbnailPath（缩略图路径）、imagePath（真正的路径）和百分比
+-(NSMutableArray *)getImagereceiving;
+
+//返回还没有发送完毕的图片的信息
+//返回的数组每一项是NSDictionary,key分别是Receiver、thumbnailPath（缩略图路径）、imagePath（真正的路径）和百分比
+-(NSMutableDictionary *)getImageSending;
 @end
