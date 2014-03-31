@@ -7,7 +7,33 @@
 //
 
 #import <Foundation/Foundation.h>
+#import <CoreBluetooth/CoreBluetooth.h>
+#import "AppCache.h"
 
-@interface BIPeripheralHandler : NSObject
+@protocol BIPeripheralHandlerDelegate <NSObject>
+
+// Step 1: Advertising
+- (void)didStartAdvertising;
+- (void)didStopAdvertising;
+- (void)didSubscribeToCharacteristic:(CBCharacteristic *)characteristic;
+- (void)didUnSubscribeToCharacteristic:(CBCharacteristic*)characteristic;
+// Step 2: Send data to central
+- (void)updateProgressPercentage:(float)percent WithData:(NSData *)data; //will keep updating the percentage value when sending data to peripheral, when percent == 1.0, the update is finished. Data is split into chunks. You should keep appending data in viewController until percent == 1.0, after which you could unarchive the data.
+
+@end
+
+@interface BIPeripheralHandler : NSObject<CBPeripheralManagerDelegate>
+{
+	AppCache *appCache;
+	BOOL sendingLastBLock;
+	NSString *filePath;
+}
+
+@property(strong, nonatomic) id<BIPeripheralHandlerDelegate, CBPeripheralManagerDelegate> delegate;
+
+- (void)startAdvertising;
+- (void)stopAdvertising;
+//- (void)sendImage:(UIImage*)image;
+- (void)sendFile:(NSString*)path;
 
 @end

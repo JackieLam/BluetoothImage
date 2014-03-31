@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1803C70C18E8FB44001800CC /* BIDataPacker.m in Sources */ = {isa = PBXBuildFile; fileRef = 1803C70B18E8FB44001800CC /* BIDataPacker.m */; };
 		1879F34318E6A33900CB61D3 /* ImageBlock.m in Sources */ = {isa = PBXBuildFile; fileRef = 1879F34218E6A33900CB61D3 /* ImageBlock.m */; };
 		18DA600518E5755C001B0AD7 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 18DA600418E5755C001B0AD7 /* Foundation.framework */; };
 		18DA600718E5755C001B0AD7 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 18DA600618E5755C001B0AD7 /* CoreGraphics.framework */; };
@@ -43,6 +44,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		1803C70A18E8FB44001800CC /* BIDataPacker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BIDataPacker.h; sourceTree = "<group>"; };
+		1803C70B18E8FB44001800CC /* BIDataPacker.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BIDataPacker.m; sourceTree = "<group>"; };
 		1879F34118E6A33900CB61D3 /* ImageBlock.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImageBlock.h; sourceTree = "<group>"; };
 		1879F34218E6A33900CB61D3 /* ImageBlock.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImageBlock.m; sourceTree = "<group>"; };
 		18DA600118E5755C001B0AD7 /* BluetoothImage.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BluetoothImage.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -197,6 +200,8 @@
 				18DA603418E575A8001B0AD7 /* BICentralHandler.m */,
 				18DA603718E575C2001B0AD7 /* BIPeripheralHandler.h */,
 				18DA603818E575C2001B0AD7 /* BIPeripheralHandler.m */,
+				1803C70A18E8FB44001800CC /* BIDataPacker.h */,
+				1803C70B18E8FB44001800CC /* BIDataPacker.m */,
 			);
 			name = Handlers;
 			sourceTree = "<group>";
@@ -330,6 +335,7 @@
 				18DA604618E5761B001B0AD7 /* BICentralViewController.m in Sources */,
 				18DA603C18E575DF001B0AD7 /* AppCache.m in Sources */,
 				18DA601518E5755C001B0AD7 /* AppDelegate.m in Sources */,
+				1803C70C18E8FB44001800CC /* BIDataPacker.m in Sources */,
 				18DA604B18E57629001B0AD7 /* BIPeripheralViewController.m in Sources */,
 				18DA604118E5760B001B0AD7 /* BIMainViewController.m in Sources */,
 				18DA601118E5755C001B0AD7 /* main.m in Sources */,

@@ -31,7 +31,7 @@
 - (void)connectToPeripheralName:(NSString *)peripheralName;
 
 // Interface of retrieving cache
-- (void)continueTransferWithPeripheralName:(NSString *)peripheralName withFileName:(NSString *)fileName;
+//- (void)continueTransferWithPeripheralName:(NSString *)peripheralName withFileName:(NSString *)fileName;
 
 @end
 
