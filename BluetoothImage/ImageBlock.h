@@ -17,4 +17,6 @@
 @property(nonatomic) unsigned long long Total;//该Image对应的图片的大小
 //@property(nonatomic) NSUInteger *BreakPoint;//该Image的块号
 
+- (NSData *)dataFromImageBlock;
+
 @end

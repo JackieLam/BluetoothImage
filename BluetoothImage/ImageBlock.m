@@ -9,12 +9,5 @@
 #import "ImageBlock.h"
 
 @implementation ImageBlock
-@synthesize Sender;
-@synthesize Receiver;
-@synthesize Data;
-@synthesize Eof;
-@synthesize Name;
-@synthesize Total;
-//@synthesize BreakPoint;
 
 @end

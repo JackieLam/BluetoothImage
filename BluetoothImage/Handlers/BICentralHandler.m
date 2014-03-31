@@ -181,13 +181,6 @@
     [self.centralManager connectPeripheral:per options:@{ CBCentralManagerScanOptionAllowDuplicatesKey : @NO }];
 }
 
-- (void)continueTransferWithPeripheralName:(NSString *)peripheralName withFileName:(NSString *)fileName
-{
-    ImageBlock * imageBlock = [[AppCache shareManager] readDataIsLastBlockFromPath:fileName];
-    CBPeripheral *per = self.periNameMatchingDict[peripheralName];
-    
-}
-
 #pragma mark - Helper Method
 - (void)cleanup
 {
