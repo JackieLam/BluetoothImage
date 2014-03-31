@@ -115,14 +115,14 @@ static NSString *CELL_IDENTIFIER = @"CellIdentifier";
             [_progressView setHidden:YES];
             
             // Load the image file and Display it.
-            NSData *data = [[NSFileManager defaultManager] contentsAtPath:imageBlock.Name];
-            if (data == nil) {
+            UIImage *image = [UIImage imageWithContentsOfFile: imageBlock.Name];
+            if (image) {
+                // TODO: use dispatch queue?
+                [_imageView setImage:image];
+                
+            } else {
                 UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Error" message:[NSString stringWithFormat: @"Cannot open the file: %@", imageBlock.Name] delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil, nil];
                 [alertView show];
-            } else {
-                // TODO: use dispatch queue?
-                UIImage *image = [UIImage imageWithData:[[NSFileManager defaultManager] contentsAtPath:imageBlock.Name]];
-                [_imageView setImage:image];
             }
         }
     });
