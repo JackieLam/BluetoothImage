@@ -172,6 +172,8 @@
         if (self.sendDataIndex >= self.dataToSend.length) {
 			if (sendingLastBLock) {
 				sendingLastBLock = NO;
+                // TODO: auto stop advertisement when transmission complete?
+                //[_peripheralManager stopAdvertising];
 			}
 			else
 			{

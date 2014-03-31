@@ -7,7 +7,7 @@
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="BICentralViewController">
             <connections>
                 <outlet property="imageView" destination="B25-ZF-utc" id="QIG-7L-j97"/>
-                <outlet property="progressView" destination="i5M-Pr-FkT" id="BjR-8Y-8Um"/>
+                <outlet property="progressView" destination="eAI-ZF-uQF" id="pHA-8z-ANq"/>
                 <outlet property="transferStatusInfo" destination="pX0-EB-axb" id="drA-ji-oru"/>
                 <outlet property="transferedDataCountInfo" destination="jEb-Z7-wjt" id="Gle-X5-Abh"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>

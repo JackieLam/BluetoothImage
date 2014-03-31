@@ -18,7 +18,7 @@
 - (void)didSubscribeToCharacteristic:(CBCharacteristic *)characteristic;
 - (void)didUnSubscribeToCharacteristic:(CBCharacteristic*)characteristic;
 // Step 2: Send data to central
-- (void)updateProgressPercentage:(float)percent WithData:(NSData *)data; //will keep updating the percentage value when sending data to peripheral, when percent == 1.0, the update is finished. Data is split into chunks. You should keep appending data in viewController until percent == 1.0, after which you could unarchive the data.
+- (void)updateProgressPercentage:(float)percent WithData:(ImageBlock *)imageBlock; //will keep updating the percentage value when sending data to peripheral, when percent == 1.0, the update is finished. Data is split into chunks. You should keep appending data in viewController until percent == 1.0, after which you could unarchive the data.
 
 @end
 
@@ -31,6 +31,7 @@
 
 @property(strong, nonatomic) id<BIPeripheralHandlerDelegate, CBPeripheralManagerDelegate> delegate;
 
+- (id)initWithDelegate:(id)controller;
 - (void)startAdvertising;
 - (void)stopAdvertising;
 //- (void)sendImage:(UIImage*)image;

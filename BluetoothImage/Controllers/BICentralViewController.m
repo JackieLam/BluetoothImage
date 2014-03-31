@@ -45,6 +45,8 @@ static NSString *CELL_IDENTIFIER = @"CellIdentifier";
     
     _centralHandler = [[BICentralHandler alloc] initWithDelegate:self];
     
+    _progressView.progress = 0.0f;
+    
     // Show devices list
     _alertView = [[UIAlertView alloc] initWithTitle:@"Select Device" message:nil delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:nil, nil];
     UITableView *deviceListView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, 230, 200)];
@@ -106,10 +108,11 @@ static NSString *CELL_IDENTIFIER = @"CellIdentifier";
     unsigned long long transfered = percent * imageBlock.Total;
     _transferedDataCountInfo.text = [NSString stringWithFormat:@"Finished: %llu KB/%llu KB", transfered/1024, imageBlock.Total/1024];
     
-    if (percent >= 1.0) {
+    if (percent >= 1.0f) {
         _transferStatusInfo.text = @"Transfered Finished!";
         [_progressView setHidden:YES];
         
+        // Load the image file and Display it.
         NSData *data = [[NSFileManager defaultManager] contentsAtPath:imageBlock.Name];
         if (data == nil) {
             UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Error" message:[NSString stringWithFormat: @"Cannot open the file: %@", imageBlock.Name] delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil, nil];

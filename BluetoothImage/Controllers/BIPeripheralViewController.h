@@ -8,6 +8,8 @@
 
 #import <UIKit/UIKit.h>
 
-@interface BIPeripheralViewController : UIViewController
+#import "BIPeripheralHandler.h"
+
+@interface BIPeripheralViewController : UIViewController <BIPeripheralHandlerDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate>
 
 @end
