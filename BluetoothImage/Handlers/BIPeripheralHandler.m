@@ -15,8 +15,10 @@
 
 @property (strong, nonatomic) CBPeripheralManager *peripheralManager;
 @property (strong, nonatomic) CBMutableCharacteristic *transferCharacteristic;
+@property (strong, nonatomic) CBMutableCharacteristic *nameCharacteristic;
 @property (strong, nonatomic) NSMutableData *dataToSend;
 @property (readwrite, nonatomic) NSInteger sendDataIndex;
+@property (nonatomic, strong) NSString *centralNameString;
 
 @end
 
@@ -41,22 +43,16 @@
 {
     if (peripheral.state == CBPeripheralManagerStatePoweredOn) {
         self.transferCharacteristic = [[CBMutableCharacteristic alloc] initWithType:[CBUUID UUIDWithString:ORIGIN_IMAGE_CHARACTERISTIC] properties:CBCharacteristicPropertyNotify value:nil permissions:CBAttributePermissionsReadable];
+        self.nameCharacteristic = [[CBMutableCharacteristic alloc] initWithType:[CBUUID UUIDWithString:NAME_CHARACTERISTIC] properties:CBCharacteristicPropertyNotify value:nil permissions:CBAttributePermissionsWriteable];
 		
         CBMutableService *transferService = [[CBMutableService alloc] initWithType:[CBUUID UUIDWithString:IMAGE_SERVICE_UUID] primary:YES];
 		
-        transferService.characteristics = @[_transferCharacteristic];
+        transferService.characteristics = @[_transferCharacteristic, _nameCharacteristic];
 		
         [_peripheralManager addService:transferService];
     }
     
 }
-
-
-//- (void)peripheralManager:(CBPeripheralManager *)peripheral willRestoreState:(NSDictionary *)dict
-//{
-//
-//}
-
 
 - (void)peripheralManagerDidStartAdvertising:(CBPeripheralManager *)peripheral error:(NSError *)error
 {
@@ -82,8 +78,6 @@
     }
 }
 
-
-
 - (void)peripheralManager:(CBPeripheralManager *)peripheral central:(CBCentral *)central didSubscribeToCharacteristic:(CBCharacteristic *)characteristic
 
 {
@@ -103,17 +97,16 @@
     }
 }
 
-//
-//- (void)peripheralManager:(CBPeripheralManager *)peripheral didReceiveReadRequest:(CBATTRequest *)request
-//{
-//
-//}
-//
-//
-//- (void)peripheralManager:(CBPeripheralManager *)peripheral didReceiveWriteRequests:(NSArray *)requests
-//{
-//
-//}
+- (void)peripheralManager:(CBPeripheralManager *)peripheral didReceiveWriteRequests:(NSArray *)requests
+{
+    for (CBATTRequest *request in requests) {
+        if ([request.characteristic.UUID isEqual:self.nameCharacteristic.UUID]) {
+            self.nameCharacteristic.value =  request.value;
+            [self.peripheralManager respondToRequest:request withResult:CBATTErrorSuccess];
+            self.centralNameString = [[NSString alloc] initWithData:self.nameCharacteristic.value encoding:NSUTF8StringEncoding];
+        }
+    }
+}
 
 
 - (void)peripheralManagerIsReadyToUpdateSubscribers:(CBPeripheralManager *)peripheral
@@ -121,15 +114,11 @@
     [self sendData];
 }
 
-
-
 #pragma mark -
 
-- (void)sendData {
-	
-    
-	
-    // We're sending data
+- (void)sendData
+{
+	// We're sending data
     // Is there any left to send?
     if (self.sendDataIndex >= self.dataToSend.length) {
         if (sendingLastBLock) {
@@ -161,6 +150,7 @@
         if (!didSend) {
             return;
         }
+        
 		
         NSString *stringFromData = [[NSString alloc] initWithData:chunk encoding:NSUTF8StringEncoding];
         NSLog(@"Sent: %@", stringFromData);
@@ -187,7 +177,7 @@
 
 - (void)startAdvertising
 {
-    [_peripheralManager startAdvertising:@{ CBAdvertisementDataServiceUUIDsKey : @[[CBUUID UUIDWithString:IMAGE_SERVICE_UUID]] }];
+    [_peripheralManager startAdvertising:@{ CBAdvertisementDataServiceUUIDsKey : @[[CBUUID UUIDWithString:IMAGE_SERVICE_UUID]], CBAdvertisementDataLocalNameKey : [UIDevice currentDevice].name}];
 }
 
 - (void)stopAdvertising
@@ -201,7 +191,7 @@
         return;
     }
 #warning DANGER!!! The Receiver's name could not be nil!
-	ImageBlock *imgBlock = [appCache readDataIsLastBlockFromPath:path ToReceiver:nil];
+	ImageBlock *imgBlock = [appCache readDataIsLastBlockFromPath:path ToReceiver:self.centralNameString];
 	if (imgBlock.Eof) {
 		sendingLastBLock = YES;
 	}
@@ -214,6 +204,14 @@
     //reset the sendDataIndex before sending
     _sendDataIndex = 0;
     [self sendData];
+    
+    if (sendingLastBLock) {
+        //如果是最后一个，就把整个ImageBlock传回去
+        [self.delegate updateProgressPercentage:self.sendDataIndex/self.dataToSend.length WithData:imgBlock];
+    }
+    else {
+        [self.delegate updateProgressPercentage:self.sendDataIndex/self.dataToSend.length WithData:nil];
+    }
 }
 
 
