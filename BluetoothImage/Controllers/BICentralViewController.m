@@ -45,7 +45,9 @@ static NSString *CELL_IDENTIFIER = @"CellIdentifier";
     
     _centralHandler = [[BICentralHandler alloc] initWithDelegate:self];
     
-    _progressView.progress = 0.0f;
+    dispatch_async(dispatch_get_main_queue(), ^{
+        _progressView.progress = 0.0f;
+    });
     
     // Show devices list
     _alertView = [[UIAlertView alloc] initWithTitle:@"Select Device" message:nil delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:nil, nil];
@@ -102,27 +104,28 @@ static NSString *CELL_IDENTIFIER = @"CellIdentifier";
     [av show];
 }
 
-- (void)updateProgressPercentage:(float)percent WithImageBlock:(ImageBlock *)imageBlock;
-{
-    _progressView.progress = percent;
-    unsigned long long transfered = percent * imageBlock.Total;
-    _transferedDataCountInfo.text = [NSString stringWithFormat:@"Finished: %llu KB/%llu KB", transfered/1024, imageBlock.Total/1024];
-    
-    if (percent >= 1.0f) {
-        _transferStatusInfo.text = @"Transfered Finished!";
-        [_progressView setHidden:YES];
+- (void)updateProgressPercentage:(float)percent WithImageBlock:(ImageBlock *)imageBlock; {
+    dispatch_async(dispatch_get_main_queue(), ^{
+         _progressView.progress = percent;
+        unsigned long long transfered = percent * imageBlock.Total;
+        _transferedDataCountInfo.text = [NSString stringWithFormat:@"Finished: %llu KB/%llu KB", transfered/1024llu, imageBlock.Total/1024llu];
         
-        // Load the image file and Display it.
-        NSData *data = [[NSFileManager defaultManager] contentsAtPath:imageBlock.Name];
-        if (data == nil) {
-            UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Error" message:[NSString stringWithFormat: @"Cannot open the file: %@", imageBlock.Name] delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil, nil];
-            [alertView show];
-        } else {
-            // TODO: use dispatch queue?
-            UIImage *image = [UIImage imageWithData:[[NSFileManager defaultManager] contentsAtPath:imageBlock.Name]];
-            [_imageView setImage:image];
+        if (percent >= 1.0f) {
+            _transferStatusInfo.text = @"Transfered Finished!";
+            [_progressView setHidden:YES];
+            
+            // Load the image file and Display it.
+            NSData *data = [[NSFileManager defaultManager] contentsAtPath:imageBlock.Name];
+            if (data == nil) {
+                UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Error" message:[NSString stringWithFormat: @"Cannot open the file: %@", imageBlock.Name] delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil, nil];
+                [alertView show];
+            } else {
+                // TODO: use dispatch queue?
+                UIImage *image = [UIImage imageWithData:[[NSFileManager defaultManager] contentsAtPath:imageBlock.Name]];
+                [_imageView setImage:image];
+            }
         }
-    }
+    });
 }
 
 #pragma mark - Table view data source
@@ -173,6 +176,10 @@ static NSString *CELL_IDENTIFIER = @"CellIdentifier";
 {
     [_peripherals removeAllObjects];
     _isConnecting = NO;
+}
+
+- (void)setReceivedProgress: (NSNumber *)number {
+    [_progressView setProgress:number.floatValue animated:YES];
 }
 
 @end

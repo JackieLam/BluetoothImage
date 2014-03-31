@@ -38,6 +38,9 @@
     // Do any additional setup after loading the view from its nib.
     _peripheralHandler = [[BIPeripheralHandler alloc] initWithDelegate:self];
     _isSending = NO;
+    dispatch_async(dispatch_get_main_queue(), ^{
+        _progressView.progress = 0.0f;
+    });
 }
 
 - (void)didReceiveMemoryWarning
@@ -93,15 +96,17 @@
 }
 
 - (void)updateProgressPercentage:(float)percent WithData:(ImageBlock *)imageBlock {
-    _progressView.progress = percent;
-    unsigned long long transfered = percent * imageBlock.Total;
-    _transferedDataCountInfo.text = [NSString stringWithFormat:@"Finished: %llu KB/%llu KB", transfered/1024, imageBlock.Total/1024];
-    
-    if (percent >= 1.0f) {
-        [_progressView setHidden:YES];
-        UIAlertView *av = [[UIAlertView alloc] initWithTitle:@"Successed!" message:nil delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil, nil];
-        [av show];
-    }
+    dispatch_async(dispatch_get_main_queue(), ^{
+        _progressView.progress = percent;
+        unsigned long long transfered = percent * imageBlock.Total;
+        _transferedDataCountInfo.text = [NSString stringWithFormat:@"Finished: %llu KB/%llu KB", transfered/1024, imageBlock.Total/1024];
+        
+        if (percent >= 1.0f) {
+            [_progressView setHidden:YES];
+            UIAlertView *av = [[UIAlertView alloc] initWithTitle:@"Successed!" message:nil delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil, nil];
+            [av show];
+        }
+    });
 }
 
 @end
