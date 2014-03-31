@@ -8,9 +8,9 @@
 
 #import "AppCache.h"
 #import "ImageBlock.h"
-//每个块的上限是100KB
-static const unsigned long long BlockSize=1024*1024;
-
+//每个块的上限是500KB
+static const unsigned long long BlockSize=500*1024;
+static NSString *curPath;
 @implementation AppCache
 
 @synthesize Sender;
@@ -18,6 +18,10 @@ static const unsigned long long BlockSize=1024*1024;
 @synthesize BlockSendedTable;
 @synthesize FileCapacity;
 @synthesize ImageReceived;
+@synthesize ImageReceiving;
+@synthesize ImageSending;
+@synthesize ImageSent;
+
 
 +(AppCache *)shareManager{
     static AppCache *shareAppCacheInstance=nil;
@@ -32,6 +36,8 @@ static const unsigned long long BlockSize=1024*1024;
     if (self) {
         assert(self!=nil);
         [self reStoreBaseData];
+        //保存本地路径，用于保存分块
+        curPath=[[NSFileManager defaultManager]currentDirectoryPath];
     }
     return self;
 }
@@ -46,19 +52,22 @@ static const unsigned long long BlockSize=1024*1024;
     //判断文件大小，缓存文件大小，避免每次都重新计算
     //在判断文件大小之后，才可以去判断文件是否到头了
     packet.Total=[self getFileCapacityWithName:path WithIdentify:identify];
-    if ([self isEof:inFile andFilename:identify]) {
-        packet.Eof=YES;
-//        [FileCapacity removeObjectForKey:identify];
-        [BlockSendedTable removeObjectForKey:identify];
-    }else{
-        packet.Eof=NO;
-        [self setNextBlockWith:identify andDict:BlockSendedTable];
-    }
-    //packet.Name的名字应该是独特的，中间用“/”分隔
     packet.Name=[path lastPathComponent];
     packet.Data=data;
     packet.Sender=self.Sender;
     packet.Receiver=receiver;
+    if ([self isEof:inFile andFilename:identify]) {
+        packet.Eof=YES;
+//        [FileCapacity removeObjectForKey:identify];
+        [BlockSendedTable removeObjectForKey:identify];
+        [self removeImageSendingWithSender:self.Sender Receiver:receiver andImagePath:path];
+        [self addToImageSentWithSender:self.Sender Receiver:receiver ThumbnailPath:@"nil" ImagePath:path];
+    }else{
+        packet.Eof=NO;
+        [self setNextBlockWith:identify andDict:BlockSendedTable];
+        [self addToImageSendingWithSender:self.Sender Receiver:receiver ThumbnailPath:@"nil" ImagePath:path Percentage:[self getPercentageWithSendingFile:packet]];
+    }
+    
     [inFile closeFile];
     return packet;
 }
@@ -68,6 +77,7 @@ static const unsigned long long BlockSize=1024*1024;
     int newValue=[[dict objectForKey:path]intValue]+1;
     [dict setObject:[NSNumber numberWithInt:newValue] forKey:path];
 }
+
 -(BOOL)isEof:(NSFileHandle *)handle andFilename:(NSString *)name{
     unsigned long long cur=[handle offsetInFile];
     unsigned long long end=[[FileCapacity objectForKey:name]unsignedLongLongValue];
@@ -94,12 +104,12 @@ static const unsigned long long BlockSize=1024*1024;
     }
 }
 
-
 -(NSString *)storeData:(ImageBlock *)image{
-    image.Name=@"/Users/developer03/Desktop/text/testImg.jpg";
+//    image.Name=@"/Users/developer03/Desktop/text/testImg.jpg";
     if ([self isFileExistentWithFileName:image.Name]==NO){
         [[NSFileManager defaultManager] createFileAtPath:image.Name contents:nil attributes:nil];
     }
+    NSString *path=[NSString stringWithFormat:@"%@/%@",curPath,image.Name];
     NSFileHandle *outFile=[NSFileHandle fileHandleForWritingAtPath:image.Name];
     unsigned long long length=[self getOffSetWithFilePath:image.Name andDict:BlockReceivedTable];
     [outFile seekToFileOffset:length];
@@ -107,11 +117,17 @@ static const unsigned long long BlockSize=1024*1024;
     [outFile closeFile];
     if (image.Eof) {
         [BlockReceivedTable removeObjectForKey:image.Name];
-        [ImageReceived addObject:image.Name];
+//        [ImageReceived addObject:image.Name];
+        //这里也要找到该文件的path
+        [self removeImageReceivingWithSender:image.Sender Receiver:self.Sender andImagePath:path];
+        [self addToImageReceivedWithSender:image.Sender Receiver:self.Sender ThumbnailPath:@"nil" ImagePath:path];
         return @"100%";
     }else{
         [self setNextBlockWith:image.Name andDict:BlockReceivedTable];
-        return [NSString stringWithFormat:@"%.1llu%%",(length+BlockSize)*100/image.Total];
+        NSString *percentage=[NSString stringWithFormat:@"%.1llu%%",(length+BlockSize)*100/image.Total];
+        //这里要找到文件的path
+        [self addToImageReceivingWithSender:image.Sender Receiver:self.Sender ThumbnailPath:@"nil" ImagePath:path Percentage:percentage];
+        return percentage;
     }
     
 }
@@ -130,12 +146,18 @@ static const unsigned long long BlockSize=1024*1024;
     NSString *FileCapacityPath=[NSHomeDirectory() stringByAppendingString:@"/FileCapacity1.plist"];
     NSString *SenderPath=[NSHomeDirectory() stringByAppendingString:@"/Sender1.plist"];
     NSString *ImageReceivedPath=[NSHomeDirectory() stringByAppendingString:@"/ImageReceived1.plist"];
+    NSString *ImageReceivingPath=[NSHomeDirectory() stringByAppendingString:@"/ImageReceiving1.plist"];
+    NSString *ImageSentPath=[NSHomeDirectory() stringByAppendingString:@"/ImageSent1.plist"];
+    NSString *ImageSendingPath=[NSHomeDirectory() stringByAppendingString:@"/ImageSending1.plist"];
 
     [self.BlockReceivedTable writeToFile:BlockReceivedTablePath atomically:YES];
     [self.BlockSendedTable writeToFile:BlockSendedTablePath atomically:YES];
     [self.FileCapacity writeToFile:FileCapacityPath atomically:YES];
     [self.Sender writeToFile:SenderPath atomically:YES encoding:NSUTF8StringEncoding error:nil];
     [self.ImageReceived writeToFile:ImageReceivedPath atomically:YES];
+    [self.ImageReceiving writeToFile:ImageReceivingPath atomically:YES];
+    [self.ImageSent writeToFile:ImageSentPath atomically:YES];
+    [self.ImageSending writeToFile:ImageSendingPath atomically:YES];
 }
 
 //反序列化
@@ -146,13 +168,19 @@ static const unsigned long long BlockSize=1024*1024;
     NSString *FileCapacityPath=[NSHomeDirectory() stringByAppendingString:@"/FileCapacity1.plist"];
     NSString *SenderPath=[NSHomeDirectory() stringByAppendingString:@"/Sender1.plist"];
     NSString *ImageReceivedPath=[NSHomeDirectory() stringByAppendingString:@"/ImageReceived1.plist"];
+    NSString *ImageReceivingPath=[NSHomeDirectory() stringByAppendingString:@"/ImageReceiving1.plist"];
+    NSString *ImageSentPath=[NSHomeDirectory() stringByAppendingString:@"/ImageSent1.plist"];
+    NSString *ImageSendingPath=[NSHomeDirectory() stringByAppendingString:@"/ImageSending1.plist"];
     
     //第一次打开应用程序时，下面4项是nil
     self.BlockReceivedTable=[self reStoreDictWithPath:BlockReceivedTablePath];
     self.BlockSendedTable=[self reStoreDictWithPath:BlockSendedTablePath];
     self.FileCapacity=[self reStoreDictWithPath:FileCapacityPath];
     self.Sender=[self reStroeSenderWithPath:SenderPath];
-    self.ImageReceived=[self reStoreArrayWithPath:ImageReceivedPath];
+    self.ImageReceived=[self reStoreDictWithPath:ImageReceivedPath];
+    self.ImageReceiving=[self reStoreDictWithPath:ImageReceivingPath];
+    self.ImageSent=[self reStoreDictWithPath:ImageSentPath];
+    self.ImageSending=[self reStoreDictWithPath:ImageSendingPath];
 }
 
 -(NSMutableDictionary *)reStoreDictWithPath:(NSString *)path{
@@ -168,6 +196,7 @@ static const unsigned long long BlockSize=1024*1024;
         temp=@"chuyang";
     return temp;
 }
+
 -(NSMutableArray *)reStoreArrayWithPath:(NSString *)path{
     NSMutableArray *temp=[NSMutableArray arrayWithContentsOfFile:path];
     if(temp==nil)
@@ -187,4 +216,79 @@ static const unsigned long long BlockSize=1024*1024;
     return [NSString stringWithFormat:@"/%@/%@/%@",sender,receiver,name];
 }
 
+-(NSArray *)getImageReceived{
+    return [ImageReceived allValues];
+}
+
+-(NSArray *)getImageReceiving{
+    return [ImageReceiving allValues];
+}
+
+-(NSArray *)getImageSent{
+    return [ImageSent allValues];
+}
+
+-(NSArray *)getImageSending{
+    return [ImageSending allValues];
+}
+
+-(void)addToImageSendingWithSender:(NSString *)sender Receiver:(NSString *) receiver ThumbnailPath:(NSString *)thumbnailPath ImagePath:(NSString *)imagePath Percentage:(NSString *)percentage{
+    NSString *identify=[self getIdentifyWithSender:Sender WithReceiver:receiver AndWithFileName:[imagePath lastPathComponent]];
+    if([ImageSending objectForKey:identify]==nil){
+        NSMutableArray *temp=[[NSMutableArray alloc]init];
+        [temp addObject:receiver];
+        [temp addObject:thumbnailPath];
+        [temp addObject:imagePath];
+        [temp addObject:percentage];
+        [ImageSending setObject:temp forKey:identify];
+    }else{
+        NSMutableArray *temp=[ImageSending objectForKey:identify];
+        [temp setObject:percentage atIndexedSubscript:3];
+    }
+    
+}
+
+-(void)removeImageSendingWithSender:(NSString *)sender Receiver:(NSString *)receiver andImagePath:(NSString *)imagePath{
+    NSString *identify=[self getIdentifyWithSender:Sender WithReceiver:receiver AndWithFileName:[imagePath lastPathComponent]];
+    [ImageSending removeObjectForKey:identify];
+}
+
+-(void)addToImageSentWithSender:(NSString *)sender Receiver:(NSString *) receiver ThumbnailPath:(NSString *)thumbnailPath ImagePath:(NSString *)imagePath{
+    NSString *identify=[self getIdentifyWithSender:Sender WithReceiver:receiver AndWithFileName:[imagePath lastPathComponent]];
+    NSMutableArray *temp=[[NSMutableArray alloc]init];
+    [temp addObject:receiver];
+    [temp addObject:thumbnailPath];
+    [temp addObject:imagePath];
+    [ImageSent setObject:temp forKey:identify];
+}
+
+-(void)addToImageReceivingWithSender:(NSString *)sender Receiver:(NSString *) receiver ThumbnailPath:(NSString *)thumbnailPath ImagePath:(NSString *)imagePath Percentage:(NSString *)percentage{
+    NSString *identify=[self getIdentifyWithSender:Sender WithReceiver:receiver AndWithFileName:[imagePath lastPathComponent]];
+    if([ImageReceiving objectForKey:identify]==nil){
+        NSMutableArray *temp=[[NSMutableArray alloc]init];
+        [temp addObject:sender];
+        [temp addObject:thumbnailPath];
+        [temp addObject:imagePath];
+        [temp addObject:percentage];
+        [ImageReceiving setObject:temp forKey:identify];
+    }else{
+        NSMutableArray *temp=[ImageSending objectForKey:identify];
+        [temp setObject:percentage atIndexedSubscript:3];
+    }
+        
+}
+
+-(void)removeImageReceivingWithSender:(NSString *)sender Receiver:(NSString *)receiver andImagePath:(NSString *)imagePath{
+    NSString *identify=[self getIdentifyWithSender:Sender WithReceiver:receiver AndWithFileName:[imagePath lastPathComponent]];
+    [ImageReceiving removeObjectForKey:identify];
+}
+
+-(void)addToImageReceivedWithSender:(NSString *)sender Receiver:(NSString *) receiver ThumbnailPath:(NSString *)thumbnailPath ImagePath:(NSString *)imagePath{
+    NSString *identify=[self getIdentifyWithSender:Sender WithReceiver:receiver AndWithFileName:[imagePath lastPathComponent]];
+    NSMutableArray *temp=[[NSMutableArray alloc]init];
+    [temp addObject:receiver];
+    [temp addObject:thumbnailPath];
+    [temp addObject:imagePath];
+    [ImageReceived setObject:temp forKey:identify];
+}
 @end
