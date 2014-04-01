@@ -98,7 +98,6 @@ static NSString *CELL_IDENTIFIER = @"CellIdentifier";
 
 - (void)didDisconnectPeripheralName:(NSString *)peripheral error:(NSError *)error
 {
-    assert(!_alertView.isVisible);
     _isConnecting = NO;
     UIAlertView *av = [[UIAlertView alloc] initWithTitle:@"Info" message:[NSString stringWithFormat:@"disconnect with %@", peripheral] delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil, nil];
     [av show];
