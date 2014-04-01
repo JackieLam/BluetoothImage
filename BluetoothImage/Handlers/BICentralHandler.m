@@ -73,8 +73,8 @@
         NSLog(@"Begin to connect to the peripheral : %@", peripheral.identifier);
         [central connectPeripheral:peripheral options:nil];
     }
-    
-    [self.delegate didDiscoverPeripheralName:peripheral.name];
+    if (self.delegate != nil)
+        [self.delegate didDiscoverPeripheralName:peripheral.name];
 }
 
 - (void)centralManager:(CBCentralManager *)central didConnectPeripheral:(CBPeripheral *)peripheral
@@ -84,7 +84,8 @@
     [_dataReceive setLength:0];
     [peripheral setDelegate:self];
     [peripheral discoverServices:@[self.imageServiceUUID]];
-    [self.delegate didConnectPeripheralName:peripheral.name error:nil];
+    if (self.delegate != nil)
+        [self.delegate didConnectPeripheralName:peripheral.name error:nil];
 }
 
 - (void)centralManager:(CBCentralManager *)central didFailToConnectPeripheral:(CBPeripheral *)peripheral error:(NSError *)error
@@ -92,8 +93,8 @@
     [self cleanup];
     [NSThread sleepForTimeInterval:rand()%4];
     [central connectPeripheral:peripheral options:nil];
-    
-    [self.delegate didConnectPeripheralName:peripheral.name error:error];
+    if (self.delegate != nil)
+        [self.delegate didConnectPeripheralName:peripheral.name error:error];
 }
 
 - (void)centralManager:(CBCentralManager *)central didDisconnectPeripheral:(CBPeripheral *)peripheral error:(NSError *)error
@@ -103,7 +104,8 @@
 //    [central scanForPeripheralsWithServices:@[self.imageServiceUUID] options:@{ CBCentralManagerScanOptionAllowDuplicatesKey : @YES }];
     NSLog(@"[!] Disconnect the peripheral!");
     
-    [self.delegate didDisconnectPeripheralName:peripheral.name error:error];
+    if (self.delegate != nil)
+        [self.delegate didDisconnectPeripheralName:peripheral.name error:error];
 }
 
 #pragma mark -
@@ -174,7 +176,8 @@ didWriteValueForCharacteristic:(CBCharacteristic *)characteristic
             
         // Finally unarchive the NSData
             ImageBlock *imageBlock = [NSKeyedUnarchiver unarchiveObjectWithData:_dataReceive];
-            [self.delegate updateProgressPercentage:1.0f WithImageBlock:imageBlock];
+            if (self.delegate != nil)
+                [self.delegate updateProgressPercentage:1.0f WithImageBlock:imageBlock];
         }
         else {
             [_dataReceive appendData:characteristic.value];

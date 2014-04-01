@@ -38,6 +38,9 @@
     // Do any additional setup after loading the view from its nib.
     _peripheralHandler = [[BIPeripheralHandler alloc] initWithDelegate:self];
     _isSending = NO;
+    dispatch_async(dispatch_get_main_queue(), ^{
+        _progressView.progress = 0.0f;
+    });
 }
 
 - (void)didReceiveMemoryWarning
@@ -63,14 +66,33 @@
     
     _isSending = YES;
     
-    NSURL *url = [info objectForKey:UIImagePickerControllerReferenceURL];
-    _fileName = url.path;
-    
     UIImage *image = [info objectForKey:UIImagePickerControllerOriginalImage];
     [_imageView setImage:image];
     
+    NSURL *url = [info objectForKey:UIImagePickerControllerReferenceURL];
+    [self setFileNameWithURL:url];
+
+    if (![[NSFileManager defaultManager] fileExistsAtPath:_fileName]) {
+        CGDataProviderRef provider = CGImageGetDataProvider(image.CGImage);
+        NSData *data = CFBridgingRelease(CGDataProviderCopyData(provider));
+        if (![data writeToFile:_fileName atomically:YES]) {
+            NSLog(@"Cannot write to file: %@", _fileName);
+        }
+    }
+    
     _progressView.progress = 0.0f;
     [_chooseOrCanelButton setTitle:@"Cancel" forState:UIControlStateNormal];
+}
+
+- (void)setFileNameWithURL: (NSURL *)url {
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    _fileName = [defaults objectForKey:url.description];
+    if (_fileName == nil) {
+        NSArray *path = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+        NSString *documentDirPath = [path objectAtIndex:0];
+        _fileName = [NSString stringWithFormat:@"%@/%@", documentDirPath, [self getNewFileNameWithExt:url.pathExtension]];
+        [defaults setObject:_fileName forKey:url.description];
+    }
 }
 
 #pragma mark - BIPeripheralHandlerDelegate
@@ -79,7 +101,7 @@
 }
 
 - (void)didStopAdvertising {
-    NSLog(@"Stop advertising...");
+    NSLog(@"Did Stop advertising...");
 }
 
 - (void)didSubscribeToCharacteristic:(CBCharacteristic *)characteristic {
@@ -93,15 +115,26 @@
 }
 
 - (void)updateProgressPercentage:(float)percent WithData:(ImageBlock *)imageBlock {
-    _progressView.progress = percent;
-    unsigned long long transfered = percent * imageBlock.Total;
-    _transferedDataCountInfo.text = [NSString stringWithFormat:@"Finished: %llu KB/%llu KB", transfered/1024, imageBlock.Total/1024];
-    
-    if (percent >= 1.0f) {
-        [_progressView setHidden:YES];
-        UIAlertView *av = [[UIAlertView alloc] initWithTitle:@"Successed!" message:nil delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil, nil];
-        [av show];
-    }
+    dispatch_async(dispatch_get_main_queue(), ^{
+        _progressView.progress = percent;
+        unsigned long long transfered = percent * imageBlock.Total;
+        _transferedDataCountInfo.text = [NSString stringWithFormat:@"Finished: %llu KB/%llu KB", transfered/1024, imageBlock.Total/1024];
+        
+        if (percent >= 1.0f) {
+            [_progressView setHidden:YES];
+            UIAlertView *av = [[UIAlertView alloc] initWithTitle:@"Successed!" message:nil delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil, nil];
+            [av show];
+            // delete the temp image file
+            [[NSFileManager defaultManager] removeItemAtPath:_fileName error:nil];
+        }
+    });
+}
+#pragma mark - Helper
+- (NSString *)getNewFileNameWithExt: (NSString*)ext {
+    NSDate *curDate = [NSDate date];
+    NSDateFormatter *fmt = [[NSDateFormatter alloc] init];
+    [fmt setDateFormat:@"yyyy-MM-dd-HH-mm-ss"];
+    return [[fmt stringFromDate:curDate] stringByAppendingPathExtension:ext];
 }
 
 @end
