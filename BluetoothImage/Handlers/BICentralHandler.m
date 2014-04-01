@@ -46,6 +46,8 @@
         self.nameCharacteristicUUID = [CBUUID UUIDWithString:NAME_CHARACTERISTIC];
         _periNameMatchingDict = [NSMutableDictionary dictionary];
         _dataReceive = [NSMutableData data];
+        
+        self.dataPacker = [[BIDataPacker alloc] init];
         _hasSendName = NO;
         _needToSendName = NO;
     }
