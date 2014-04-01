@@ -65,7 +65,7 @@
     [_peripheralHandler startAdvertising];
     
     _isSending = YES;
-    
+   
     UIImage *image = [info objectForKey:UIImagePickerControllerOriginalImage];
     [_imageView setImage:image];
     
