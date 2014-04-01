@@ -17,6 +17,7 @@
 @property (strong, nonatomic) NSString *fileName;
 @property (strong, nonatomic) IBOutlet UIButton *chooseOrCanelButton;
 @property (nonatomic) BOOL isSending;
+
 - (IBAction)doChoosePhotoBtn:(id)sender;
 
 @end
@@ -118,7 +119,7 @@
     dispatch_async(dispatch_get_main_queue(), ^{
         _progressView.progress = percent;
         unsigned long long transfered = percent * imageBlock.Total;
-        _transferedDataCountInfo.text = [NSString stringWithFormat:@"Finished: %llu KB/%llu KB", transfered/1024, imageBlock.Total/1024];
+        _transferedDataCountInfo.text = [NSString stringWithFormat:@"Finished: %llu KB/%llu KB", transfered/1024llu, imageBlock.Total/1024llu];
         
         if (percent >= 1.0f) {
             [_progressView setHidden:YES];

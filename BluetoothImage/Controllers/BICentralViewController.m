@@ -71,40 +71,49 @@ static NSString *CELL_IDENTIFIER = @"CellIdentifier";
 #pragma mark - BICentralHandlerDelegate
 
 - (void)didDiscoverPeripheralName:(NSString *)peripheral {
-    // Add new peripheral to devices list
-    BOOL alreadyDiscovered = NO;
-    for (NSString *discoveredPeripheral in _peripherals) {
-        if ([discoveredPeripheral isEqual:peripheral]) {
-            alreadyDiscovered = YES;
+    dispatch_async(dispatch_get_main_queue(), ^{
+        // Add new peripheral to devices list
+        BOOL alreadyDiscovered = NO;
+        for (NSString *discoveredPeripheral in _peripherals) {
+            if ([discoveredPeripheral isEqual:peripheral]) {
+                alreadyDiscovered = YES;
+            }
         }
-    }
-    if (!alreadyDiscovered) {
-        [_peripherals addObject:peripheral];
-        [_deviceListView reloadData];
-    }
+        if (!alreadyDiscovered) {
+            [_peripherals addObject:peripheral];
+            [_deviceListView reloadData];
+        }
+    });
 }
 
 - (void)didFailToConnectPeripheralName:(NSString *)peripheralName error:(NSError *)error {
-    _isConnecting = NO;
-    assert(_alertView != nil && _alertView.isVisible);
-    _alertView.message = [NSString stringWithFormat:@"fail to connect with %@", peripheralName];
-    if (error) {
-        _alertView.message = [_alertView.message stringByAppendingFormat:@" with error: %@", error.description];
-    }
+    dispatch_async(dispatch_get_main_queue(), ^{
+        _isConnecting = NO;
+        assert(_alertView != nil && _alertView.isVisible);
+        _alertView.message = [NSString stringWithFormat:@"fail to connect with %@", peripheralName];
+        if (error) {
+            _alertView.message = [_alertView.message stringByAppendingFormat:@" with error: %@", error.description];
+        }
+    });
 }
 
 - (void)didConnectPeripheralName:(NSString *)peripheral error:(NSError *)error
 {
-    _alertView.message = @"Successed!";
-    [_centralHandler stopScanning];
-    [_alertView dismissWithClickedButtonIndex:-1 animated:YES];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        _alertView.message = @"Successed!";
+        [_centralHandler stopScanning];
+        [_alertView dismissWithClickedButtonIndex:-1 animated:YES];
+    });
 }
 
 - (void)didDisconnectPeripheralName:(NSString *)peripheral error:(NSError *)error
 {
-    _isConnecting = NO;
-    UIAlertView *av = [[UIAlertView alloc] initWithTitle:@"Info" message:[NSString stringWithFormat:@"disconnect with %@", peripheral] delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil, nil];
-    [av show];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        _isConnecting = NO;
+        UIAlertView *av = [[UIAlertView alloc] initWithTitle:@"Info" message:[NSString stringWithFormat:@"disconnect with %@", peripheral] delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil, nil];
+        [av show];
+
+    });
 }
 
 - (void)updateProgressPercentage:(float)percent WithImageBlock:(ImageBlock *)imageBlock; {

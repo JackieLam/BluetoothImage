@@ -292,7 +292,7 @@
 				ORGANIZATIONNAME = "Cho-Yeung Lam";
 				TargetAttributes = {
 					18DA600018E5755C001B0AD7 = {
-						DevelopmentTeam = YPP93L48Z5;
+						DevelopmentTeam = 8L66SG2ZVA;
 					};
 					18DA601B18E5755C001B0AD7 = {
 						TestTargetID = 18DA600018E5755C001B0AD7;
