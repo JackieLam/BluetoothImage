@@ -140,15 +140,17 @@ static NSString *curPath;
 
 //序列化
 -(void)storeBaseData{
+    NSArray *path = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSString *documentDir = path[0];
     //局部变量，只有在用的时候才创建
-    NSString *BlockReceivedTablePath=[NSHomeDirectory() stringByAppendingString:@"/BlockReceivedTablePath1.plist"];
-    NSString *BlockSendedTablePath=[NSHomeDirectory() stringByAppendingString:@"/BlockSendedTable1.plist"];
-    NSString *FileCapacityPath=[NSHomeDirectory() stringByAppendingString:@"/FileCapacity1.plist"];
-    NSString *SenderPath=[NSHomeDirectory() stringByAppendingString:@"/Sender1.plist"];
-    NSString *ImageReceivedPath=[NSHomeDirectory() stringByAppendingString:@"/ImageReceived1.plist"];
-    NSString *ImageReceivingPath=[NSHomeDirectory() stringByAppendingString:@"/ImageReceiving1.plist"];
-    NSString *ImageSentPath=[NSHomeDirectory() stringByAppendingString:@"/ImageSent1.plist"];
-    NSString *ImageSendingPath=[NSHomeDirectory() stringByAppendingString:@"/ImageSending1.plist"];
+    NSString *BlockReceivedTablePath=[documentDir stringByAppendingString:@"/BlockReceivedTablePath1.plist"];
+    NSString *BlockSendedTablePath=[documentDir stringByAppendingString:@"/BlockSendedTable1.plist"];
+    NSString *FileCapacityPath=[documentDir stringByAppendingString:@"/FileCapacity1.plist"];
+    NSString *SenderPath=[documentDir stringByAppendingString:@"/Sender1.plist"];
+    NSString *ImageReceivedPath=[documentDir stringByAppendingString:@"/ImageReceived1.plist"];
+    NSString *ImageReceivingPath=[documentDir stringByAppendingString:@"/ImageReceiving1.plist"];
+    NSString *ImageSentPath=[documentDir stringByAppendingString:@"/ImageSent1.plist"];
+    NSString *ImageSendingPath=[documentDir stringByAppendingString:@"/ImageSending1.plist"];
 
     [self.BlockReceivedTable writeToFile:BlockReceivedTablePath atomically:YES];
     [self.BlockSendedTable writeToFile:BlockSendedTablePath atomically:YES];
@@ -162,15 +164,17 @@ static NSString *curPath;
 
 //反序列化
 -(void)reStoreBaseData{
+    NSArray *path = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSString *documentDir = path[0];
     //局部变量，只有在用的时候才创建
-    NSString *BlockReceivedTablePath=[NSHomeDirectory() stringByAppendingString:@"/BlockReceivedTablePath1.plist"];
-    NSString *BlockSendedTablePath=[NSHomeDirectory() stringByAppendingString:@"/BlockSendedTable1.plist"];
-    NSString *FileCapacityPath=[NSHomeDirectory() stringByAppendingString:@"/FileCapacity1.plist"];
-    NSString *SenderPath=[NSHomeDirectory() stringByAppendingString:@"/Sender1.plist"];
-    NSString *ImageReceivedPath=[NSHomeDirectory() stringByAppendingString:@"/ImageReceived1.plist"];
-    NSString *ImageReceivingPath=[NSHomeDirectory() stringByAppendingString:@"/ImageReceiving1.plist"];
-    NSString *ImageSentPath=[NSHomeDirectory() stringByAppendingString:@"/ImageSent1.plist"];
-    NSString *ImageSendingPath=[NSHomeDirectory() stringByAppendingString:@"/ImageSending1.plist"];
+    NSString *BlockReceivedTablePath=[documentDir stringByAppendingString:@"/BlockReceivedTablePath1.plist"];
+    NSString *BlockSendedTablePath=[documentDir stringByAppendingString:@"/BlockSendedTable1.plist"];
+    NSString *FileCapacityPath=[documentDir stringByAppendingString:@"/FileCapacity1.plist"];
+    NSString *SenderPath=[documentDir stringByAppendingString:@"/Sender1.plist"];
+    NSString *ImageReceivedPath=[documentDir stringByAppendingString:@"/ImageReceived1.plist"];
+    NSString *ImageReceivingPath=[documentDir stringByAppendingString:@"/ImageReceiving1.plist"];
+    NSString *ImageSentPath=[documentDir stringByAppendingString:@"/ImageSent1.plist"];
+    NSString *ImageSendingPath=[documentDir stringByAppendingString:@"/ImageSending1.plist"];
     
     //第一次打开应用程序时，下面4项是nil
     self.BlockReceivedTable=[self reStoreDictWithPath:BlockReceivedTablePath];

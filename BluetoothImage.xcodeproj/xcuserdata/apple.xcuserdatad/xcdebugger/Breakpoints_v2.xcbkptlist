@@ -9,22 +9,6 @@
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "BluetoothImage/Handlers/BICentralHandler.m"
-            timestampString = "417975025.008813"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "146"
-            endingLineNumber = "146"
-            landmarkName = "-peripheral:didDiscoverCharacteristicsForService:error:"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
             filePath = "BluetoothImage/Handlers/BIPeripheralHandler.m"
             timestampString = "417970581.655719"
             startingColumnNumber = "9223372036854775807"
@@ -42,13 +26,13 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "BluetoothImage/Handlers/BICentralHandler.m"
-            timestampString = "417975025.008813"
+            timestampString = "418013479.594715"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "157"
-            endingLineNumber = "157"
-            landmarkName = "-peripheral:didWriteValueForCharacteristic:error:"
-            landmarkType = "5">
+            startingLineNumber = "158"
+            endingLineNumber = "158"
+            landmarkName = "@implementation BICentralHandler"
+            landmarkType = "3">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -58,29 +42,43 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "BluetoothImage/Handlers/BICentralHandler.m"
-            timestampString = "417975025.008813"
+            timestampString = "418014629.221954"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "135"
-            endingLineNumber = "135"
-            landmarkName = "-peripheral:didDiscoverCharacteristicsForService:error:"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "BluetoothImage/Handlers/BICentralHandler.m"
-            timestampString = "418011205.783452"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "190"
-            endingLineNumber = "190"
+            startingLineNumber = "192"
+            endingLineNumber = "192"
             landmarkName = "-peripheral:didUpdateValueForCharacteristic:error:"
             landmarkType = "5">
+            <Locations>
+               <Location
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "__69-[BICentralHandler peripheral:didUpdateValueForCharacteristic:error:]_block_invoke"
+                  moduleName = "BluetoothImage"
+                  urlString = "file:///Users/apple/Developer/BluetoothImage/BluetoothImage/Handlers/BICentralHandler.m"
+                  timestampString = "418014824.88416"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "194"
+                  endingLineNumber = "194"
+                  offsetFromSymbolStart = "440">
+               </Location>
+               <Location
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "__69-[BICentralHandler peripheral:didUpdateValueForCharacteristic:error:]_block_invoke"
+                  moduleName = "BluetoothImage"
+                  urlString = "file:///Users/apple/Developer/BluetoothImage/BluetoothImage/Handlers/BICentralHandler.m"
+                  timestampString = "418014824.88435"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "194"
+                  endingLineNumber = "194"
+                  offsetFromSymbolStart = "444">
+               </Location>
+            </Locations>
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -90,27 +88,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "BluetoothImage/Controllers/BICentralViewController.m"
-            timestampString = "417971338.14335"
+            timestampString = "418014148.866669"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "70"
-            endingLineNumber = "70"
-            landmarkName = "-didDiscoverPeripheralName:"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "BluetoothImage/Controllers/BICentralViewController.m"
-            timestampString = "417971340.762045"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "83"
-            endingLineNumber = "83"
+            startingLineNumber = "87"
+            endingLineNumber = "87"
             landmarkName = "-didFailToConnectPeripheralName:error:"
             landmarkType = "5">
          </BreakpointContent>
@@ -122,11 +104,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "BluetoothImage/Controllers/BICentralViewController.m"
-            timestampString = "417971342.907716"
+            timestampString = "418014148.866669"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "92"
-            endingLineNumber = "92"
+            startingLineNumber = "96"
+            endingLineNumber = "96"
             landmarkName = "-didConnectPeripheralName:error:"
             landmarkType = "5">
          </BreakpointContent>
@@ -138,11 +120,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "BluetoothImage/Controllers/BICentralViewController.m"
-            timestampString = "417971344.433007"
+            timestampString = "418014148.866669"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "99"
-            endingLineNumber = "99"
+            startingLineNumber = "103"
+            endingLineNumber = "103"
             landmarkName = "-didDisconnectPeripheralName:error:"
             landmarkType = "5">
          </BreakpointContent>
@@ -154,13 +136,43 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "BluetoothImage/Controllers/BICentralViewController.m"
-            timestampString = "417971347.310303"
+            timestampString = "418014148.866669"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "107"
-            endingLineNumber = "107"
+            startingLineNumber = "111"
+            endingLineNumber = "111"
             landmarkName = "-updateProgressPercentage:WithImageBlock:"
             landmarkType = "5">
+            <Locations>
+               <Location
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "-[BICentralViewController updateProgressPercentage:WithImageBlock:]"
+                  moduleName = "BluetoothImage"
+                  urlString = "file:///Users/apple/Developer/BluetoothImage/BluetoothImage/Controllers/BICentralViewController.m"
+                  timestampString = "418014824.899649"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "111"
+                  endingLineNumber = "111"
+                  offsetFromSymbolStart = "94">
+               </Location>
+               <Location
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "__67-[BICentralViewController updateProgressPercentage:WithImageBlock:]_block_invoke"
+                  moduleName = "BluetoothImage"
+                  urlString = "file:///Users/apple/Developer/BluetoothImage/BluetoothImage/Controllers/BICentralViewController.m"
+                  timestampString = "418014824.899782"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "112"
+                  endingLineNumber = "112"
+                  offsetFromSymbolStart = "44">
+               </Location>
+            </Locations>
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -169,14 +181,24 @@
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "BluetoothImage/Controllers/BICentralViewController.m"
-            timestampString = "417971440.932327"
+            filePath = "BluetoothImage/Handlers/BICentralHandler.m"
+            timestampString = "418014629.221954"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "77"
-            endingLineNumber = "77"
-            landmarkName = "-didDiscoverPeripheralName:"
+            startingLineNumber = "212"
+            endingLineNumber = "212"
+            landmarkName = "-connectToPeripheralName:"
             landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.ExceptionBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            scope = "0"
+            stopOnStyle = "0">
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>

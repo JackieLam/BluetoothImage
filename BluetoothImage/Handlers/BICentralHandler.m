@@ -21,6 +21,8 @@
 @property (nonatomic, strong) CBUUID *nameCharacteristicUUID;
 @property (nonatomic, strong) NSMutableDictionary *periNameMatchingDict;
 
+@property (nonatomic) BOOL needToSendName;
+@property (nonatomic) BOOL hasSendName;
 @property (nonatomic, strong) NSMutableData *dataReceive;
 @property (nonatomic) NSInteger sendDataIndex;
 
@@ -46,6 +48,8 @@
         _dataReceive = [NSMutableData data];
         
         self.dataPacker = [[BIDataPacker alloc] init];
+        _hasSendName = NO;
+        _needToSendName = NO;
     }
     return self;
 }
@@ -76,8 +80,8 @@
     if (self.discoveredPeripheral.identifier != peripheral.identifier) {
         
         self.discoveredPeripheral = peripheral;
-        NSLog(@"Begin to connect to the peripheral : %@", peripheral.identifier);
-        [central connectPeripheral:peripheral options:nil];
+        //NSLog(@"Begin to connect to the peripheral : %@", peripheral.identifier);
+        //[central connectPeripheral:peripheral options:nil];
     }
     if (self.delegate != nil)
         [self.delegate didDiscoverPeripheralName:peripheral.name];
@@ -90,6 +94,7 @@
     [_dataReceive setLength:0];
     [peripheral setDelegate:self];
     [peripheral discoverServices:@[self.imageServiceUUID]];
+    _needToSendName = YES;
     if (self.delegate != nil)
         [self.delegate didConnectPeripheralName:peripheral.name error:nil];
 }
@@ -141,10 +146,9 @@
     }
 
     for (CBCharacteristic *characteristic in service.characteristics) {
-        if ([characteristic.UUID isEqual:self.originImageCharacteristicUUID]) {
+        if (_hasSendName && [characteristic.UUID isEqual:self.originImageCharacteristicUUID]) {
             [peripheral setNotifyValue:YES forCharacteristic:characteristic];
-        }
-        else if ([characteristic.UUID isEqual:self.nameCharacteristicUUID]) {
+        } else if (_needToSendName && !_hasSendName && [characteristic.UUID isEqual:self.nameCharacteristicUUID]) {
             NSString *nameString = [UIDevice currentDevice].name;
             NSData *nameData = [nameString dataUsingEncoding:NSUTF8StringEncoding];
             [peripheral writeValue:nameData forCharacteristic:characteristic type:CBCharacteristicWriteWithResponse];
@@ -156,12 +160,15 @@
 didWriteValueForCharacteristic:(CBCharacteristic *)characteristic
              error:(NSError *)error
 {
+    _needToSendName = NO;
+    _hasSendName = YES;
     if (error) {
         NSLog(@"[!] Error writing my own name to the peripheral : %@",
               [error localizedDescription]);
     }
     else {
         NSLog(@"[!] Successfully writing my own name to the peripheral");
+        
     }
 }
 
