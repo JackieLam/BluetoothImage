@@ -23,6 +23,9 @@ static NSString *CELL_IDENTIFIER = @"CellIdentifier";
 @property (nonatomic) NSInteger transferedDataCount;
 @property (strong, nonatomic) IBOutlet UILabel *transferedDataCountInfo;
 @property (nonatomic) BOOL isConnecting;
+
+@property (nonatomic, strong) UITableView *deviceListView;
+
 @end
 
 @implementation BICentralViewController
@@ -51,11 +54,11 @@ static NSString *CELL_IDENTIFIER = @"CellIdentifier";
     
     // Show devices list
     _alertView = [[UIAlertView alloc] initWithTitle:@"Select Device" message:nil delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:nil, nil];
-    UITableView *deviceListView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, 230, 200)];
-    [deviceListView registerClass:[UITableViewCell class] forCellReuseIdentifier:CELL_IDENTIFIER];
-    deviceListView.dataSource = self;
-    deviceListView.delegate = self;
-    [_alertView setValue:deviceListView forKeyPath:@"accessoryView"];
+    _deviceListView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, 230, 200)];
+    [_deviceListView registerClass:[UITableViewCell class] forCellReuseIdentifier:CELL_IDENTIFIER];
+    _deviceListView.dataSource = self;
+    _deviceListView.delegate = self;
+    [_alertView setValue:_deviceListView forKeyPath:@"accessoryView"];
     [_alertView show];
 }
 
@@ -77,6 +80,7 @@ static NSString *CELL_IDENTIFIER = @"CellIdentifier";
     }
     if (!alreadyDiscovered) {
         [_peripherals addObject:peripheral];
+        [_deviceListView reloadData];
     }
 }
 

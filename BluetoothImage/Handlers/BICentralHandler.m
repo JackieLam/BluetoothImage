@@ -160,6 +160,8 @@
 didWriteValueForCharacteristic:(CBCharacteristic *)characteristic
              error:(NSError *)error
 {
+    _needToSendName = NO;
+    _hasSendName = YES;
     if (error) {
         NSLog(@"[!] Error writing my own name to the peripheral : %@",
               [error localizedDescription]);

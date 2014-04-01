@@ -191,7 +191,7 @@
         return;
     }
 #warning DANGER!!! The Receiver's name could not be nil!
-	ImageBlock *imgBlock = [appCache readDataIsLastBlockFromPath:path ToReceiver:self.centralNameString];
+	ImageBlock *imgBlock = [appCache readDataIsLastBlockFromPath:path ToReceiver:@"justfortest"];
 	if (imgBlock.Eof) {
 		sendingLastBLock = YES;
 	}
