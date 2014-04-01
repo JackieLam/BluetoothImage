@@ -168,8 +168,7 @@ didWriteValueForCharacteristic:(CBCharacteristic *)characteristic
     }
     else {
         NSLog(@"[!] Successfully writing my own name to the peripheral");
-        _needToSendName = NO;
-        _hasSendName = YES;
+        
     }
 }
 
