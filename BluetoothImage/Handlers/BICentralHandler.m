@@ -8,8 +8,9 @@
 
 #import "BICentralHandler.h"
 #import "SERVICES.h"
-//#import "ImageBlock.h"
 #import "AppCache.h"
+#import "BIDataPacker.h"
+#import "ImageBlock.h"
 
 @interface BICentralHandler()
 
@@ -22,6 +23,9 @@
 
 @property (nonatomic, strong) NSMutableData *dataReceive;
 @property (nonatomic) NSInteger sendDataIndex;
+
+@property (nonatomic, strong) BIDataPacker *dataPacker;
+@property (nonatomic) int imageSize;
 
 @end
 
@@ -40,6 +44,8 @@
         self.nameCharacteristicUUID = [CBUUID UUIDWithString:NAME_CHARACTERISTIC];
         _periNameMatchingDict = [NSMutableDictionary dictionary];
         _dataReceive = [NSMutableData data];
+        
+        self.dataPacker = [[BIDataPacker alloc] init];
     }
     return self;
 }
@@ -166,21 +172,17 @@ didWriteValueForCharacteristic:(CBCharacteristic *)characteristic
         return;
     }
 	
-    NSString *stringFromData = [[NSString alloc] initWithData:characteristic.value encoding:NSUTF8StringEncoding];
 	dispatch_async(dispatch_get_main_queue(), ^{
-        if ([stringFromData isEqualToString:@"EOM"]) {
-            
-        // Finished and cancel the connection
-            [peripheral setNotifyValue:NO forCharacteristic:characteristic];
-            [_centralManager cancelPeripheralConnection:peripheral];
-            
-        // Finally unarchive the NSData
-            ImageBlock *imageBlock = [NSKeyedUnarchiver unarchiveObjectWithData:_dataReceive];
-            if (self.delegate != nil)
-                [self.delegate updateProgressPercentage:1.0f WithImageBlock:imageBlock];
+        NSData *data = [_dataPacker deserializeData:(NSMutableData *)characteristic.value];
+        if (data != nil) {
+            ImageBlock *imageBlock = [NSKeyedUnarchiver unarchiveObjectWithData:data];
+            if (imageBlock.imageType == IMAGETYPETHUMB) {
+                _imageSize = imageBlock.Total;
+            }
+            [self.delegate updateProgressPercentage:1.0f WithImageBlock:imageBlock];
         }
         else {
-            [_dataReceive appendData:characteristic.value];
+            
         }
     });
 }
